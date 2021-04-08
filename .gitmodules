@@ -1,0 +1,3 @@
+[submodule "java"]
+	path = java
+	url = git@github.com:Sirius-social/sirius-sdk-java.git
