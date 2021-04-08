@@ -1,0 +1,4 @@
+include ':sdk_java'
+include ':sdk_android'
+include ':app'
+rootProject.name = "SiriusSdkSample"
