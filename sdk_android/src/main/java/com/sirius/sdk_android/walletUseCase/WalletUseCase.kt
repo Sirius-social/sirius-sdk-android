@@ -38,6 +38,7 @@ class WalletUseCase constructor(
         }
     }
 
+    lateinit var context: com.sirius.sdk_android.hub.ContextAndroid
 
     val OPEN_WALLET_REQUEST_CODE = 1007
     val SCAN_INVITATION_WALLET_REQUEST_CODE = 1009
@@ -335,5 +336,42 @@ class WalletUseCase constructor(
         }
     }
 
+
+    fun createContext(indyEndpoint: String) {
+        context = com.sirius.sdk_android.hub.ContextAndroid.builderAndroid().build()
+    }
+
+
+    fun generateQrCodeInvitation(label: String, myEndpoint : String?): String? {
+        // Ключ установки соединения. Аналог Bob Pre-key
+        //см. [2.4. Keys] https://signal.org/docs/specifications/x3dh/
+        val connectionKey = context.crypto.createKey()
+       // val sm = Inviter(context, Pairwise.Me("myDid", "myVerkey"), connectionKey, myEndpoint)
+        // Теперь сформируем приглашение для других через 0160
+        // шаг 1 - определимся какой endpoint мы возьмем, для простоты возьмем endpoint без доп шифрования
+        val endpoints = context.endpoints
+        var myEndpoint: com.sirius.sdk.agent.connections.Endpoint? = null
+        for (e in endpoints) {
+            if (e.routingKeys.isEmpty()) {
+                myEndpoint = e
+                break
+            }
+        }
+        if (myEndpoint == null) return null
+        // шаг 2 - создаем приглашение
+        val invitation = com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation.builder().setLabel(label)
+            .setRecipientKeys(listOf(connectionKey)).setEndpoint(myEndpoint.address).build()
+
+        // шаг 2 - создаем приглашение
+
+        // шаг 3 - согласно Aries-0160 генерируем URL
+
+        // Establish connection with Sirius Communicator via standard Aries protocol
+        // https://github.com/hyperledger/aries-rfcs/blob/master/features/0160-connection-protocol/README.md#states
+
+        val qrContent = invitation.invitationUrl()
+        return qrContent
+
+    }
 
 }
