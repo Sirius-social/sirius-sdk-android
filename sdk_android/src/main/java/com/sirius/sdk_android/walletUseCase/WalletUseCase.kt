@@ -1,17 +1,18 @@
 package com.sirius.sdk_android.walletUseCase
 
-import android.content.Context
-import android.text.TextUtils
-import android.util.Log
+
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sirius.sdk_android.IndyWallet
+import com.sirius.sdk_android.hub.ContextMobile
 import com.sirius.sdk_android.models.KeyDidRecord
 import com.sirius.sdk_android.models.WalletRecordSearch
 import com.sirius.sdk_android.utils.FileUtils
 import com.sirius.sdk_android.utils.HashUtils
 
 import org.hyperledger.indy.sdk.IndyException
+import org.hyperledger.indy.sdk.did.Did
+import org.hyperledger.indy.sdk.did.DidResults.CreateAndStoreMyDidResult
 import org.hyperledger.indy.sdk.non_secrets.WalletRecord
 import org.hyperledger.indy.sdk.non_secrets.WalletSearch
 import org.hyperledger.indy.sdk.wallet.Wallet
@@ -38,7 +39,7 @@ class WalletUseCase constructor(
         }
     }
 
-    lateinit var context: com.sirius.sdk_android.hub.ContextAndroid
+    lateinit var context: ContextMobile
 
     val OPEN_WALLET_REQUEST_CODE = 1007
     val SCAN_INVITATION_WALLET_REQUEST_CODE = 1009
@@ -47,10 +48,10 @@ class WalletUseCase constructor(
     private var dirPath: String = "wallet"
     private var exportdirPath: String = "export"
     private var genesisPath: String = "genesis"
-    fun setDirPath(context: Context) {
-        dirPath = context.filesDir.absolutePath + File.separator + "wallet"
-        exportdirPath = context.filesDir.absolutePath + File.separator + "export"
-        genesisPath = context.filesDir.absolutePath + File.separator + "genesis"
+    fun setDirsPath(mainDirPath : String) {
+        this.dirPath = mainDirPath+ File.separator + "wallet"
+        this.exportdirPath =mainDirPath + File.separator + "export"
+        this.genesisPath = mainDirPath+ File.separator + "genesis"
     }
 
     fun exportWallet(userJid: String) {
@@ -80,7 +81,7 @@ class WalletUseCase constructor(
             FileUtils.forceDelete(projDir)
             //   FileUtils.deleteDirectory(projDir)
         } catch (e: java.lang.Exception) {
-            Log.d("mylog2080", "deleteWallet dirPath + File.separator + alias=" + e.message)
+           System.out.println("mylog2080 deleteWallet dirPath + File.separator + alias=" + e.message)
             e.printStackTrace()
         }
     }
@@ -135,6 +136,22 @@ class WalletUseCase constructor(
     }
 
 
+    fun openWallet(userJid: String?, pin: String?): Wallet? {
+
+        //TODO REFACTOR WITH LAYERS
+        val alias = HashUtils.generateHash(userJid)
+        val projDir = File(dirPath)
+        if (!projDir.exists()) {
+            projDir.mkdirs()
+        }
+        val path = "{\"path\":\"$projDir\"}"
+        val pass = HashUtils.generateHashWithoutStoredSalt(pin, alias)
+        val myWalletConfig = "{\"id\":\"$alias\" , \"storage_config\":$path}"
+        val myWalletCredentials = "{\"key\":\"$pass\"}"
+        myWallet = Wallet.openWallet(myWalletConfig, myWalletCredentials).get()
+        return myWallet
+    }
+
     fun createWallet(userJid: String?, pin: String?): Boolean {
         try {
             val alias = HashUtils.generateHash(userJid)
@@ -177,8 +194,8 @@ class WalletUseCase constructor(
 
     fun setUserResourses(resources: String, afterSet: (sessionId: String) -> Unit) {
         var userSessionId = resources
-        Log.d("mylog900", "setUserResourses from Prefs userSessionId=$userSessionId")
-        if (TextUtils.isEmpty(userSessionId)) {
+       // Log.d("mylog900", "setUserResourses from Prefs userSessionId=$userSessionId")
+        if (userSessionId.isNullOrEmpty()) {
             try {
                 val userSessionIdJson =
                     WalletRecord.get(IndyWallet.myWallet, "user_session_id", "my_session", "{}")
@@ -186,7 +203,7 @@ class WalletUseCase constructor(
                 val gson = Gson()
                 val didRecord = gson.fromJson(userSessionIdJson, KeyDidRecord::class.java)
                 userSessionId = didRecord.value
-                Log.d("mylog900", "setUserResourses from Wallet userSessionId=$userSessionId")
+               // Log.d("mylog900", "setUserResourses from Wallet userSessionId=$userSessionId")
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             } catch (e: ExecutionException) {
@@ -197,7 +214,7 @@ class WalletUseCase constructor(
                 e.printStackTrace()
             }
             try {
-                if (TextUtils.isEmpty(userSessionId)) {
+                if (userSessionId.isNullOrEmpty()) {
                     userSessionId = UUID.randomUUID().toString()
                     WalletRecord.add(
                         IndyWallet.myWallet,
@@ -207,7 +224,7 @@ class WalletUseCase constructor(
                         "{}"
                     ).get()
                 }
-                Log.d("mylog900", "setUserResourses generateNew =$userSessionId")
+               // Log.d("mylog900", "setUserResourses generateNew =$userSessionId")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -322,7 +339,8 @@ class WalletUseCase constructor(
         }
         try {
             val gson = GsonBuilder().create()
-            if (TextUtils.isEmpty(getRecordFrom(wallet, type, id))) {
+            val record = getRecordFrom(wallet, type, id)
+            if (record.isNullOrEmpty()) {
                 WalletRecord.add(wallet, type, id, value, "{}").get()
             } else {
                 WalletRecord.updateValue(wallet, type, id, value).get()
@@ -338,15 +356,34 @@ class WalletUseCase constructor(
 
 
     fun createContext(indyEndpoint: String) {
-        context = com.sirius.sdk_android.hub.ContextAndroid.builderAndroid().build()
+        context = ContextMobile.builderAndroid().setEndpoint(indyEndpoint).build()
+        //Log.d("mylog299", "createContext context crypto=" + context.crypto)
     }
 
+    fun createAndStoreMyDid(): CreateAndStoreMyDidResult? {
+        try {
+            val myDidResult = Did.createAndStoreMyDid(myWallet, "{}").get()
+            val key = myDidResult.verkey
+            val did = myDidResult.did
+            WalletRecord.add(myWallet, "key-to-did", key, did, "{}").get()
+           // Log.d("mylog900", "createAndStoreMyDid key=$key did=$did")
+            return myDidResult
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        } catch (e: ExecutionException) {
+            e.printStackTrace()
+        } catch (e: IndyException) {
+            e.printStackTrace()
+        }
+        return null
+    }
 
-    fun generateQrCodeInvitation(label: String, myEndpoint : String?): String? {
+    fun generateQrCodeInvitation(label: String): String? {
         // Ключ установки соединения. Аналог Bob Pre-key
         //см. [2.4. Keys] https://signal.org/docs/specifications/x3dh/
+        System.out.println("mylog299 generateQrCodeInvitation context crypto=" + context.crypto)
         val connectionKey = context.crypto.createKey()
-       // val sm = Inviter(context, Pairwise.Me("myDid", "myVerkey"), connectionKey, myEndpoint)
+        // val sm = Inviter(context, Pairwise.Me("myDid", "myVerkey"), connectionKey, myEndpoint)
         // Теперь сформируем приглашение для других через 0160
         // шаг 1 - определимся какой endpoint мы возьмем, для простоты возьмем endpoint без доп шифрования
         val endpoints = context.endpoints
@@ -357,10 +394,13 @@ class WalletUseCase constructor(
                 break
             }
         }
+        System.out.println("mylog299 myEndpoint="+myEndpoint)
         if (myEndpoint == null) return null
         // шаг 2 - создаем приглашение
-        val invitation = com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation.builder().setLabel(label)
-            .setRecipientKeys(listOf(connectionKey)).setEndpoint(myEndpoint.address).build()
+        val invitation =
+            com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation.builder()
+                .setLabel(label)
+                .setRecipientKeys(listOf(connectionKey)).setEndpoint(myEndpoint.address).build()
 
         // шаг 2 - создаем приглашение
 
@@ -368,8 +408,11 @@ class WalletUseCase constructor(
 
         // Establish connection with Sirius Communicator via standard Aries protocol
         // https://github.com/hyperledger/aries-rfcs/blob/master/features/0160-connection-protocol/README.md#states
-
+        System.out.println("mylog299 invitation="+invitation)
+        System.out.println("mylog299 invitation="+invitation.messageObj)
+        System.out.println("mylog299 invitation="+invitation.endpoint())
         val qrContent = invitation.invitationUrl()
+        System.out.println("mylog299 qrContent="+qrContent)
         return qrContent
 
     }

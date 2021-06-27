@@ -1,6 +1,6 @@
 package com.sirius.sdk_android
 
-import android.content.Context
+
 import com.sirius.sdk_android.walletUseCase.WalletUseCase
 import org.hyperledger.indy.sdk.wallet.Wallet
 
@@ -22,41 +22,44 @@ class SDK {
 
     val walletUseCase = WalletUseCase.getInstance();
 
-    fun initialize(context: Context) {
-        walletUseCase.setDirPath(context)
-        walletUseCase.createContext("")
+    fun initialize(indyEndpoint : String, mainDirPath: String ) {
+        walletUseCase.setDirsPath(mainDirPath)
+        walletUseCase.createContext(indyEndpoint)
     }
 
 
-
-
-    fun ensureWalletOpen(userJid: String, pin: String): Wallet {
+    fun ensureWalletOpen(userJid: String, pin: String): Wallet? {
         return if (walletUseCase.isWalletExist(userJid)) {
-            IndyWallet.openWallet(pin)
+            walletUseCase.openWallet(userJid, pin)
         } else {
             walletUseCase.createWallet(userJid, pin)
-            IndyWallet.openWallet(pin)
+            walletUseCase.openWallet(userJid, pin)
         }
     }
 
-    fun closeWallet(wallet: Wallet){
-        wallet.closeWallet()
+    fun closeWallet(wallet: Wallet?) {
+        wallet?.closeWallet()
     }
 
-    fun openWallet(pin: String?): Wallet {
-        return IndyWallet.openWallet(pin)
+    fun openWallet(userJid: String, pin: String?): Wallet {
+        return IndyWallet.openWallet(userJid, pin)
     }
 
     fun createWallet(userJid: String?, pin: String?) {
         walletUseCase.createWallet(userJid, pin)
     }
 
-    fun generateInvitation(label: String, myEndpoint : String): String? {
-        return walletUseCase.generateQrCodeInvitation(label,myEndpoint)
+    fun generateInvitation(label: String): String? {
+        return walletUseCase.generateQrCodeInvitation(label)
     }
 
-    fun proposeTest(){
+    fun proposeTest() {
 
         examples.propose_credential.Main.main(arrayOf(""))
+    }
+
+    fun QrTest() {
+
+        examples.Main.main(null)
     }
 }

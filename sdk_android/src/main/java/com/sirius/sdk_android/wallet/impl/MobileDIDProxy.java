@@ -1,21 +1,23 @@
-package com.sirius.sdk_android.wallet_impl;
+package com.sirius.sdk_android.wallet.impl;
 
 import com.sirius.sdk.agent.RemoteParams;
-import com.sirius.sdk.agent.connections.AgentRPC;
+import com.sirius.sdk.agent.connections.BaseAgentConnection;
 import com.sirius.sdk.agent.connections.RemoteCallWrapper;
 import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractDID;
 import com.sirius.sdk.utils.Pair;
 import com.sirius.sdk_android.IndyWallet;
+import com.sirius.sdk_android.walletUseCase.WalletUseCase;
 
-import org.json.JSONArray;
+import org.hyperledger.indy.sdk.did.DidResults;
+import shadow.org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DIDProxy extends AbstractDID  {
-    AgentRPC rpc;
+public class MobileDIDProxy extends AbstractDID  {
+    BaseAgentConnection rpc;
 
-    public DIDProxy(AgentRPC rpc) {
+    public MobileDIDProxy(BaseAgentConnection rpc) {
         this.rpc = rpc;
     }
 
@@ -122,7 +124,9 @@ public class DIDProxy extends AbstractDID  {
 
     @Override
     public String createKey(String seed) {
-        try {
+       DidResults.CreateAndStoreMyDidResult results =  IndyWallet.createAndStoreMyDid(IndyWallet.getMyWallet());
+       return results.getVerkey();
+    /*    try {
             RemoteParams params = RemoteParams.RemoteParamsBuilder.create()
                     .add("seed", seed)
                     .build();
@@ -133,7 +137,7 @@ public class DIDProxy extends AbstractDID  {
         } catch (Exception siriusConnectionClosed) {
             siriusConnectionClosed.printStackTrace();
         }
-        return null;
+        return null;*/
     }
 
     @Override

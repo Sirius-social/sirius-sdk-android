@@ -1,11 +1,6 @@
  package com.sirius.sdk_android;
 
- import android.content.Intent;
- import android.os.Handler;
- import android.text.TextUtils;
- import android.util.Log;
 
- import androidx.annotation.Nullable;
 
  import com.google.gson.Gson;
  import com.sirius.sdk.errors.indy_exceptions.WalletAccessFailedException;
@@ -13,6 +8,7 @@
  import com.sirius.sdk_android.models.KeyDidRecord;
  import com.sirius.sdk_android.utils.FileUtils;
  import com.sirius.sdk_android.utils.HashUtils;
+ import com.sirius.sdk_android.walletUseCase.WalletUseCase;
 
  import org.hyperledger.indy.sdk.IndyException;
  import org.hyperledger.indy.sdk.did.Did;
@@ -27,7 +23,7 @@
  import java.util.UUID;
  import java.util.concurrent.ExecutionException;
 
- import static android.app.Activity.RESULT_OK;
+
 
  public class IndyWallet {
      private static final String dirPath = File.separator + "wallet";
@@ -35,7 +31,9 @@
      public static final int OPEN_WALLET_REQUEST_CODE = 1007;
      public static final int SCAN_INVITATION_WALLET_REQUEST_CODE = 1009;
 
+    public static  void initialize(){
 
+    }
      public static Wallet getMyWallet() {
          return myWallet;
      }
@@ -64,7 +62,7 @@
          String did = null;
          try {
              did = WalletRecord.get(wallet, "key-to-did", key, "{}").get();
-             Log.d("mylog900", "DIDForKey key=" + key + " did=" + did);
+             System.out.println("mylog900 DIDForKey key=" + key + " did=" + did);
              if (did != null) {
                  Gson gson = new Gson();
                  KeyDidRecord didRecord = gson.fromJson(did, KeyDidRecord.class);
@@ -88,7 +86,7 @@
          String did = null;
          try {
              String didJson = WalletRecord.get(wallet, "recipentkey-to-did", key, "{}").get();
-             Log.d("mylog900", "DIDForKey key=" + key + " didJson=" + didJson);
+             System.out.println("mylog900 DIDForKey key=" + key + " didJson=" + didJson);
              if (didJson != null) {
                  Gson gson = new Gson();
                  KeyDidRecord didRecord = gson.fromJson(didJson, KeyDidRecord.class);
@@ -109,7 +107,7 @@
 
      public static void removeDIDForRecipentKey(Wallet wallet, String key, String did) {
          try {
-             Log.d("mylo540", "key=" + key + " did=" + did);
+             System.out.println("mylo540 key=" + key + " did=" + did);
              WalletRecord.add(wallet, "recipentkey-to-did", key, did, "{}").get();
          } catch (InterruptedException e) {
              e.printStackTrace();
@@ -123,8 +121,9 @@
 
      public static void addOrUpdateDIDForRecipentKey(Wallet wallet, String key, String did) {
          try {
-             Log.d("mylo540", "key=" + key + " did=" + did);
-             if (TextUtils.isEmpty(DIDForRecipentKey(wallet, key))) {
+             System.out.println("mylo540 key=" + key + " did=" + did);
+            String didFor =  DIDForRecipentKey(wallet, key);
+             if (didFor == null || didFor.isEmpty()) {
                  WalletRecord.add(wallet, "recipentkey-to-did", key, did, "{}").get();
              } else {
                  WalletRecord.updateValue(wallet, "recipentkey-to-did", key, did).get();
@@ -149,7 +148,7 @@
              String key = myDidResult.getVerkey();
              String did = myDidResult.getDid();
              WalletRecord.add(wallet, "key-to-did", key, did, "{}").get();
-             Log.d("mylog900", "createAndStoreMyDid key=" + key + " did=" + did);
+             System.out.println("mylog900 createAndStoreMyDid key=" + key + " did=" + did);
              return myDidResult;
          } catch (InterruptedException e) {
              e.printStackTrace();
@@ -170,10 +169,10 @@
               String didForKey = DIDForKey(wallet,theirKey);
              if(didForKey==null){
                  WalletRecord.add(wallet, "key-to-did", theirKey, theirDid, "{}").get();
-                 Log.d("mylog900", "createAndStoreTheirDid theirJson=" + theirJson);
+                 System.out.println("mylog900 createAndStoreTheirDid theirJson=" + theirJson);
              }else{
                  WalletRecord.updateValue(wallet, "key-to-did", theirKey, theirDid).get();
-                 Log.d("mylog900", "createAndStoreTheirDid updateValue theirJson=" + theirJson);
+                 System.out.println("mylog900 createAndStoreTheirDid updateValue theirJson=" + theirJson);
               }
              Did.storeTheirDid(wallet, theirJson).get();
          } catch (InterruptedException e) {
@@ -210,7 +209,8 @@
      }
 
      public static void deleteCredDefMessage(String credDefId) {
-         if (!TextUtils.isEmpty(getCredDefMessage(credDefId))) {
+         String defMess = getCredDefMessage(credDefId);
+         if (defMess!=null && !defMess.isEmpty()) {
              try {
                  WalletRecord.delete(IndyWallet.getMyWallet(), "cred_def_message", credDefId).get();
              } catch (InterruptedException e) {
@@ -258,7 +258,8 @@
      }
 
      public static void deleteCredDefMessage2(String credDefId) {
-         if (!TextUtils.isEmpty(getCredDefMessage2(credDefId))) {
+         String message = getCredDefMessage2(credDefId);
+         if (message!=null && !message.isEmpty()) {
              try {
                  WalletRecord.delete(IndyWallet.getMyWallet(), "cred_def_message2", credDefId).get();
              } catch (InterruptedException e) {
@@ -313,7 +314,8 @@
      }
 
      public static void deleteIssuerSchema(String schemaId) {
-         if (!TextUtils.isEmpty(getIssuerSchema(schemaId))) {
+       String schema =   getIssuerSchema(schemaId);
+         if (schema!=null && !schema.isEmpty()) {
              try {
                  WalletRecord.delete(IndyWallet.getMyWallet(), "wallet_issuer_schema", schemaId).get();
              } catch (InterruptedException e) {
@@ -349,7 +351,7 @@
      }
 
      public static void storeCredDef(String credDefId, String metaData) {
-         Log.d("mylog2080","storeCredDef credDefId="+credDefId);
+         System.out.println("mylog2080 storeCredDef credDefId="+credDefId);
          deleteCredDef(credDefId);
          try {
              WalletRecord.add(IndyWallet.getMyWallet(), "cred_def_key", credDefId, metaData, "{}").get();
@@ -366,7 +368,7 @@
 
 
      public static String getCredDef(String credDefId) {
-         Log.d("mylog2080","getCredDef credDefId="+credDefId);
+         System.out.println("mylog2080 getCredDef credDefId="+credDefId);
          try {
              String values = WalletRecord.get(IndyWallet.getMyWallet(), "cred_def_key", credDefId, "{}").get();
              if (values != null) {
@@ -417,10 +419,10 @@
 
      }
 
-    public static Wallet openWallet(String pin) throws WalletNotFoundException, WalletAccessFailedException, IndyException, InvalidKeySpecException, NoSuchAlgorithmException, ExecutionException, InterruptedException {
+    public static Wallet openWallet(String userJid,String pin) throws WalletNotFoundException, WalletAccessFailedException, IndyException, InvalidKeySpecException, NoSuchAlgorithmException, ExecutionException, InterruptedException {
 
         //TODO REFACTOR WITH LAYERS
-         String alias = HashUtils.generateHash("AppPref.getUserJid()");
+         String alias = HashUtils.generateHash(userJid);
          File projDir = new File(dirPath);
          if (!projDir.exists()) {
              projDir.mkdirs();
@@ -595,15 +597,16 @@
      }
 
 
-     public static boolean onActivityResultOpenWalletNew(int requestCode, int resultCode, @Nullable Intent data) {
+/*     public static boolean onActivityResultOpenWalletNew(int requestCode, int resultCode, @Nullable Intent data) {
          if (requestCode == OPEN_WALLET_REQUEST_CODE) {
              if (resultCode == RESULT_OK) {
                  return true;
              }
          }
          return false;
-     }
+     }*/
 
+/*
      public static void onActivityResultOpenWallet(int requestCode, int resultCode, @Nullable Intent data, boolean openWallet, WalletListener walletListener) {
 
          if (requestCode == OPEN_WALLET_REQUEST_CODE) {
@@ -673,5 +676,6 @@
 
      }
 
+*/
 
  }

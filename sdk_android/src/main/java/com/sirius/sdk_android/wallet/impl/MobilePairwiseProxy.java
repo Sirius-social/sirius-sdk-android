@@ -1,19 +1,19 @@
-package com.sirius.sdk_android.wallet_impl;
+package com.sirius.sdk_android.wallet.impl;
 
 import com.sirius.sdk.agent.RemoteParams;
-import com.sirius.sdk.agent.connections.AgentRPC;
+import com.sirius.sdk.agent.connections.BaseAgentConnection;
 import com.sirius.sdk.agent.connections.RemoteCallWrapper;
 import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractPairwise;
 import com.sirius.sdk.utils.Pair;
 
-import org.json.JSONObject;
+import shadow.org.json.JSONObject;
 
 import java.util.List;
 
-public class PairwiseProxy extends AbstractPairwise  {
-    AgentRPC rpc;
+public class MobilePairwiseProxy extends AbstractPairwise  {
+    BaseAgentConnection rpc;
 
-    public PairwiseProxy(AgentRPC rpc) {
+    public MobilePairwiseProxy(BaseAgentConnection rpc) {
         this.rpc = rpc;
     }
 

@@ -1,6 +1,6 @@
 package com.sirius.sdk_android.utils;
 
-import android.annotation.SuppressLint;
+
 
 
 
@@ -59,7 +59,7 @@ public class DateUtils {
     public static final String PATTERN_INDY_MESSAGE = "yyyy-MM-dd HH:mm:ssZ";
     public static final String PATTERN_INDY_MESSAGE2 = "yyyy-MM-dd'T'HH:mm:ssZ";
 
-    @SuppressLint("SimpleDateFormat")
+
     public static String formatDate(String dateStr, SimpleDateFormat srcFormat, SimpleDateFormat dstformat) {
         if (dateStr == null) return "";
         try {
@@ -72,7 +72,7 @@ public class DateUtils {
         return dateStr;
     }
 
-    @SuppressLint("SimpleDateFormat")
+
     public static Date getDateFromString(String dateStr, String pattern, boolean fromGmt) {
         if (dateStr == null) return new Date();
         try {
@@ -89,7 +89,7 @@ public class DateUtils {
         return new Date();
     }
 
-    @SuppressLint("SimpleDateFormat")
+
     public static String getStringFromDate(Date date, String pattern, boolean isGMTTime) {
 
         String formatedDate = "";
@@ -108,7 +108,7 @@ public class DateUtils {
 
     }
 
-    @SuppressLint("SimpleDateFormat")
+
     public static String getStringFromDate(Calendar date, String pattern, boolean isGMTTime) {
 
         String formatedDate = "";

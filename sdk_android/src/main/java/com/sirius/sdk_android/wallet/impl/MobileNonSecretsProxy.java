@@ -1,21 +1,21 @@
-package com.sirius.sdk_android.wallet_impl;
+package com.sirius.sdk_android.wallet.impl;
 
 import com.sirius.sdk.agent.RemoteParams;
-import com.sirius.sdk.agent.connections.AgentRPC;
+import com.sirius.sdk.agent.connections.BaseAgentConnection;
 import com.sirius.sdk.agent.connections.RemoteCallWrapper;
 import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractNonSecrets;
 import com.sirius.sdk.agent.wallet.abstract_wallet.model.RetrieveRecordOptions;
 import com.sirius.sdk.utils.Pair;
 
-import org.json.JSONObject;
+import shadow.org.json.JSONObject;
 
 import java.util.List;
 
-public class NonSecretsProxy extends AbstractNonSecrets  {
+public class MobileNonSecretsProxy extends AbstractNonSecrets  {
 
-    AgentRPC rpc;
+    BaseAgentConnection rpc;
 
-    public NonSecretsProxy(AgentRPC rpc) {
+    public MobileNonSecretsProxy(BaseAgentConnection rpc) {
         this.rpc = rpc;
     }
 
@@ -23,9 +23,9 @@ public class NonSecretsProxy extends AbstractNonSecrets  {
     @Override
     public void addWalletRecord(String type, String id, String value, String tags) {
         JSONObject tagObject = null;
-     /*   if(tags!=null){
-            tagObject = new JSONObject(tags);
-        }*/
+        if(tags!=null){
+            tagObject = new JSONObject();
+        }
         new RemoteCallWrapper<Void>(rpc){}.remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/add_wallet_record",
                 RemoteParams.RemoteParamsBuilder.create()
                 .add("type_", type).add("id_", id).add("value",value).add("tags", tagObject));
@@ -41,9 +41,9 @@ public class NonSecretsProxy extends AbstractNonSecrets  {
     @Override
     public void updateWalletRecordTags(String type, String id, String tags) {
         JSONObject tagObject = null;
-      /*  if(tags!=null){
-            tagObject = new JSONObject(tags);
-        }*/
+        if(tags!=null){
+            tagObject = new JSONObject();
+        }
         new RemoteCallWrapper<Void>(rpc){}.remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/update_wallet_record_tags",
                 RemoteParams.RemoteParamsBuilder.create()
                         .add("type_", type).add("id_", id).add("tags", tagObject));
@@ -52,9 +52,9 @@ public class NonSecretsProxy extends AbstractNonSecrets  {
     @Override
     public void addWalletRecordTags(String type, String id, String tags) {
         JSONObject tagObject = null;
-     /*   if(tags!=null){
-            tagObject = new JSONObject(tags);
-        }*/
+        if(tags!=null){
+            tagObject = new JSONObject();
+        }
         new RemoteCallWrapper<Void>(rpc){}.remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/add_wallet_record_tags",
                 RemoteParams.RemoteParamsBuilder.create()
                         .add("type_", type).add("id_", id).add("tags", tagObject));
@@ -84,9 +84,9 @@ public class NonSecretsProxy extends AbstractNonSecrets  {
     @Override
     public Pair<List<String>, Integer> walletSearch(String type, String query, RetrieveRecordOptions options, int limit) {
         JSONObject queryObject = null;
-       /* if(query!=null){
-            queryObject = new JSONObject(query);
-        }*/
+        if(query!=null){
+            queryObject = new JSONObject();
+        }
         return new RemoteCallWrapper<Pair<List<String>, Integer>>(rpc){}.remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/wallet_search",
                 RemoteParams.RemoteParamsBuilder.create()
                         .add("type_", type).add("query", queryObject).add("options", options).add("limit",limit));

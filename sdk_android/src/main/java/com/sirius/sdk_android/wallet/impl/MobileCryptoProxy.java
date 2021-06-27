@@ -1,30 +1,31 @@
-package com.sirius.sdk_android.wallet_impl;
+package com.sirius.sdk_android.wallet.impl;
 
 import com.sirius.sdk.agent.RemoteParams;
-import com.sirius.sdk.agent.connections.AgentRPC;
+import com.sirius.sdk.agent.connections.BaseAgentConnection;
 import com.sirius.sdk.agent.connections.RemoteCallWrapper;
 import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractCrypto;
+import com.sirius.sdk_android.walletUseCase.WalletUseCase;
 
-import org.hyperledger.indy.sdk.crypto.Crypto;
+import org.hyperledger.indy.sdk.did.DidResults;
 
 import java.util.List;
 
-public class CryptoProxy extends AbstractCrypto   {
+public class MobileCryptoProxy extends AbstractCrypto   {
 
-    AgentRPC rpc;
+    BaseAgentConnection rpc;
 
-    public CryptoProxy(AgentRPC rpc) {
+    public MobileCryptoProxy(BaseAgentConnection rpc) {
         this.rpc = rpc;
     }
 
 
     @Override
     public String createKey(String seed, String cryptoType) {
-        return new RemoteCallWrapper<String>(rpc){}.
-                remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/create_key",
-                        RemoteParams.RemoteParamsBuilder.create()
-                                .add("seed", seed)
-                                .add("crypto_type", cryptoType));
+       DidResults.CreateAndStoreMyDidResult result =  WalletUseCase.getInstance().createAndStoreMyDid();
+       if(result!=null){
+           return   result.getVerkey();
+       }
+        return null;
     }
 
     @Override
@@ -81,7 +82,6 @@ public class CryptoProxy extends AbstractCrypto   {
 
     @Override
     public byte[] packMessage(Object message, List<String> recipentVerkeys, String senderVerkey) {
-       // Crypto.packMessage(message,recipentVerkeys,senderVerkey)
         return new RemoteCallWrapper<byte[]>(rpc){}.
                 remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/pack_message",
                         RemoteParams.RemoteParamsBuilder.create()

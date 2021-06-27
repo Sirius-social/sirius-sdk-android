@@ -1,23 +1,5 @@
 package com.sirius.sdk_android.utils;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.provider.OpenableColumns;
-import android.text.TextUtils;
-import android.util.Log;
-import android.webkit.MimeTypeMap;
-
-import androidx.core.content.ContextCompat;
 
 
 
@@ -132,21 +114,21 @@ public class FileUtils {
      * @return True if Uri is a MediaStore Uri.
      * @author paulburke
      */
-    public static boolean isMediaUri(Uri uri) {
+ /*   public static boolean isMediaUri(Uri uri) {
         return "media".equalsIgnoreCase(uri.getAuthority());
-    }
+    }*/
 
     /**
      * Convert File into Uri.
      *
      * @return uri
      */
-    public static Uri getUri(File file) {
+  /*  public static Uri getUri(File file) {
         if (file != null) {
             return Uri.fromFile(file);
         }
         return null;
-    }
+    }*/
 
     /**
      * Returns the path only (without file name).
@@ -175,7 +157,7 @@ public class FileUtils {
     /**
      * @return The MIME type for the given file.
      */
-    public static String getMimeType(File file) {
+  /*  public static String getMimeType(File file) {
 
         String extension = getExtension(file.getName());
 
@@ -184,15 +166,15 @@ public class FileUtils {
         }
 
         return "application/octet-stream";
-    }
+    }*/
 
     /**
      * @return The MIME type for the give Uri.
      */
-    public static String getMimeType(Context context, Uri uri) {
+   /* public static String getMimeType(Context context, Uri uri) {
         File file = new File(getPath(context, uri));
         return getMimeType(file);
-    }
+    }*/
 
     /**
      * @param uri The Uri to check.
@@ -208,35 +190,35 @@ public class FileUtils {
      * @return Whether the Uri authority is ExternalStorageProvider.
      * @author paulburke
      */
-    public static boolean isExternalStorageDocument(Uri uri) {
+ /*   public static boolean isExternalStorageDocument(Uri uri) {
         return "com.android.externalstorage.documents".equals(uri.getAuthority());
-    }
+    }*/
 
     /**
      * @param uri The Uri to check.
      * @return Whether the Uri authority is DownloadsProvider.
      * @author paulburke
      */
-    public static boolean isDownloadsDocument(Uri uri) {
+  /*  public static boolean isDownloadsDocument(Uri uri) {
         return "com.android.providers.downloads.documents".equals(uri.getAuthority());
     }
-
+*/
     /**
      * @param uri The Uri to check.
      * @return Whether the Uri authority is MediaProvider.
      * @author paulburke
      */
-    public static boolean isMediaDocument(Uri uri) {
+ /*   public static boolean isMediaDocument(Uri uri) {
         return "com.android.providers.media.documents".equals(uri.getAuthority());
-    }
+    }*/
 
     /**
      * @param uri The Uri to check.
      * @return Whether the Uri authority is Google Photos.
      */
-    public static boolean isGooglePhotosUri(Uri uri) {
+  /*  public static boolean isGooglePhotosUri(Uri uri) {
         return "com.google.android.apps.photos.content".equals(uri.getAuthority());
-    }
+    }*/
 
     /**
      * Get the value of the data column for this Uri. This is useful for
@@ -249,7 +231,7 @@ public class FileUtils {
      * @return The value of the _data column, which is typically a file path.
      * @author paulburke
      */
-    public static String getDataColumn(Context context, Uri uri, String selection,
+ /*   public static String getDataColumn(Context context, Uri uri, String selection,
                                        String[] selectionArgs) {
 
         Cursor cursor = null;
@@ -278,7 +260,7 @@ public class FileUtils {
         }
         return null;
     }
-
+*/
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access
      * Framework Documents, as well as the _data field for the MediaStore and
@@ -293,6 +275,7 @@ public class FileUtils {
      * @see #isLocal(String)
      * @see #getFile(Context, Uri)
      */
+/*
     public static String getPath(final Context context, final Uri uri) {
 
         if (DEBUG) {
@@ -312,10 +295,12 @@ public class FileUtils {
         // DocumentProvider
         if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
             // LocalStorageProvider
-          /*  if (isLocalStorageDocument(uri)) {
+          */
+/*  if (isLocalStorageDocument(uri)) {
                 // The path is the id
                 return DocumentsContract.getDocumentId(uri);
-            }*/
+            }*//*
+
             // ExternalStorageProvider
             if (isExternalStorageDocument(uri)) {
                 final String docId = DocumentsContract.getDocumentId(uri);
@@ -376,6 +361,7 @@ public class FileUtils {
 
         return null;
     }
+*/
 
     /**
      * Convert Uri into File, if possible.
@@ -385,7 +371,7 @@ public class FileUtils {
      * @author paulburke
      * @see #getPath(Context, Uri)
      */
-    public static File getFile(Context context, Uri uri) {
+  /*  public static File getFile(Context context, Uri uri) {
         if (uri != null) {
             String path = getPath(context, uri);
             if (path != null && isLocal(path)) {
@@ -394,7 +380,7 @@ public class FileUtils {
         }
         return null;
     }
-
+*/
     /**
      * Get the file size in a human-readable string.
      *
@@ -430,9 +416,9 @@ public class FileUtils {
      *
      * @author paulburke
      */
-    public static Bitmap getThumbnail(Context context, File file) {
+  /*  public static Bitmap getThumbnail(Context context, File file) {
         return getThumbnail(context, getUri(file), getMimeType(file));
-    }
+    }*/
 
     /**
      * Attempt to retrieve the thumbnail of given Uri from the MediaStore. This
@@ -440,9 +426,9 @@ public class FileUtils {
      *
      * @author paulburke
      */
-    public static Bitmap getThumbnail(Context context, Uri uri) {
+ /*   public static Bitmap getThumbnail(Context context, Uri uri) {
         return getThumbnail(context, uri, getMimeType(context, uri));
-    }
+    }*/
 
     /**
      * Attempt to retrieve the thumbnail of given Uri from the MediaStore. This
@@ -450,6 +436,7 @@ public class FileUtils {
      *
      * @author paulburke
      */
+/*
     public static Bitmap getThumbnail(Context context, Uri uri, String mimeType) {
         if (DEBUG) {
             Log.d(TAG, "Attempting to get thumbnail");
@@ -498,6 +485,7 @@ public class FileUtils {
         }
         return bm;
     }
+*/
 
     /**
      * File and folder comparator. TODO Expose sorting option method
@@ -547,15 +535,7 @@ public class FileUtils {
      * @return The intent for opening a file with Intent.createChooser()
      * @author paulburke
      */
-    public static Intent createGetContentIntent() {
-        // Implicitly allow the user to select a particular kind of data
-        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        // The MIME data type filter
-        intent.setType("*/*");
-        // Only return URIs that can be opened with ContentResolver
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        return intent;
-    }
+
 
     private static String getRootOfExternalStorage(File file) {
         if (file == null) {
@@ -566,7 +546,7 @@ public class FileUtils {
         //return path.replaceAll("/Android/data/" + App.getContext().getPackageName() + "/files", "");
     }
 
-    public static String getDirs(Context context) {
+/*    public static String getDirs(Context context) {
         File[] dirs = ContextCompat.getExternalFilesDirs(context, null);
         if (dirs != null) {
             for (File file : dirs) {
@@ -579,7 +559,7 @@ public class FileUtils {
 
         }
         return "";
-    }
+    }*/
 
 /*    private String getRootOfExternalStorage(File file) {
         if (file == null)
@@ -706,7 +686,7 @@ public class FileUtils {
         }
     }
 
-    private static File getAlbumDir(Context context) {
+/*    private static File getAlbumDir(Context context) {
         File storageDir = context.getExternalFilesDir(null);
         if (storageDir != null) {
             if (!storageDir.mkdirs()) {
@@ -717,9 +697,9 @@ public class FileUtils {
             return storageDir;
         }
         return null;
-    }
+    }*/
 
-    public static File getExternalPublicAlbumDir() {
+  /*  public static File getExternalPublicAlbumDir() {
         File storageDir = null;
         //  if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
         String storageDirPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/" + "DigitalSignate";
@@ -738,7 +718,8 @@ public class FileUtils {
         //  }
         return storageDir;
     }
-
+*/
+/*
     public static File getOutputMediaFileWithScore(Context context, String score) {
         try {
             File storageDir = getAlbumDir(context);
@@ -750,8 +731,9 @@ public class FileUtils {
         }
         return null;
     }
+*/
 
-    public static File getOutputMediaFile(Context context) {
+  /*  public static File getOutputMediaFile(Context context) {
         try {
             File storageDir = getAlbumDir(context);
             String timeStamp = DateUtils.getStringFromDate(new Date(), "yyyyMMdd_HHmmss", false);
@@ -761,9 +743,9 @@ public class FileUtils {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
-    public static File getOutputMediaFile(Context context, String dir, String name) {
+ /*   public static File getOutputMediaFile(Context context, String dir, String name) {
         try {
             File storageDir = getAlbumDir(context);
             String pathToDir = storageDir.getAbsolutePath() + "/" + dir + "/";
@@ -779,8 +761,8 @@ public class FileUtils {
         }
         return null;
     }
-
-    public static boolean isFileExist(Context context, String dir, String filename) {
+*/
+ /*   public static boolean isFileExist(Context context, String dir, String filename) {
         if (TextUtils.isEmpty(filename)) {
             return false;
         }
@@ -790,9 +772,9 @@ public class FileUtils {
             return false;
         }
         return file.exists();
-    }
+    }*/
 
-    public static boolean isFileExist(String filepath) {
+ /*   public static boolean isFileExist(String filepath) {
         try {
             if (TextUtils.isEmpty(filepath)) {
                 return false;
@@ -804,10 +786,10 @@ public class FileUtils {
             e.printStackTrace();
         }
         return false;
-    }
+    }*/
 
     //From FileUtil
-    public static File from(Context context, Uri uri) throws IOException {
+   /* public static File from(Context context, Uri uri) throws IOException {
         InputStream inputStream = context.getContentResolver().openInputStream(uri);
         String fileName = getFileName(context, uri);
         String[] splitName = splitFileName(fileName);
@@ -830,8 +812,8 @@ public class FileUtils {
         }
         return tempFile;
     }
-
-    public static void deletefrom(Context context, Uri uri) {
+*/
+   /* public static void deletefrom(Context context, Uri uri) {
         try {
             if (uri == null) {
                 return;
@@ -851,7 +833,7 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+*/
 
     /*    InputStream inputStream = context.getContentResolver().openInputStream(uri);
         String fileName = getFileName(context, uri);
@@ -874,9 +856,9 @@ public class FileUtils {
             out.close();
         }
         return tempFile;*/
-    }
+  //  }
 
-    public static File fromWithoutThrow(Context context, Uri uri) {
+ /*   public static File fromWithoutThrow(Context context, Uri uri) {
         try {
             return from(context, uri);
         } catch (Exception e) {
@@ -884,7 +866,7 @@ public class FileUtils {
         }
         return null;
     }
-
+*/
     private static String[] splitFileName(String fileName) {
         String name = fileName;
         String extension = "";
@@ -897,7 +879,7 @@ public class FileUtils {
         return new String[]{name, extension};
     }
 
-    private static String getFileName(Context context, Uri uri) {
+   /* private static String getFileName(Context context, Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
             Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
@@ -922,7 +904,7 @@ public class FileUtils {
         }
         return result;
     }
-
+*/
     private static File rename(File file, String newName) {
         File newFile = new File(file.getParent(), newName);
         if (!newFile.equals(file)) {
@@ -948,7 +930,7 @@ public class FileUtils {
     }
 
     //From Utils
-    public static boolean checkFileExists(String localPath) {
+ /*   public static boolean checkFileExists(String localPath) {
         File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         String path = dir.getPath() + File.separator + localPath;
         File f = new File(path);
@@ -956,13 +938,14 @@ public class FileUtils {
             f.delete();
         }
         return f.exists();
-    }
+    }*/
 
-    public static String buildPath(String localPath) {
+ /*   public static String buildPath(String localPath) {
         File f = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         return f.getAbsolutePath() + File.separator + localPath;
-    }
+    }*/
 
+/*
     public static void copyFileToCache(String filename) {
         int idx = filename.lastIndexOf(File.separator);
         String filepath = filename.substring(idx + 1, filename.length());
@@ -999,6 +982,7 @@ public class FileUtils {
             }
         }
     }
+*/
 
     public static byte[] fileToBytes(File file) {
         int size = (int) file.length();
@@ -1015,7 +999,7 @@ public class FileUtils {
         return bytes;
     }
 
-    public static File getOutputMediaFile(String dir, String name) {
+/*    public static File getOutputMediaFile(String dir, String name) {
         try {
             File storageDir = getAlbumDir(null);
             String pathToDir = storageDir.getAbsolutePath() + "/" + dir + "/";
@@ -1030,7 +1014,7 @@ public class FileUtils {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
 /*    private static File getAlbumDir(Context context) {
         File storageDir = App.getContext().getExternalFilesDir(null);
