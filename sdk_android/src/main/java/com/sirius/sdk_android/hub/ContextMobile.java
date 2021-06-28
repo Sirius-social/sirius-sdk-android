@@ -3,6 +3,7 @@ package com.sirius.sdk_android.hub;
 import com.sirius.sdk.agent.microledgers.AbstractMicroledgerList;
 import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractCrypto;
 import com.sirius.sdk.encryption.P2PConnection;
+import com.sirius.sdk.hub.AbstractHub;
 import com.sirius.sdk.hub.Context;
 import com.sirius.sdk.hub.Hub;
 
@@ -12,64 +13,60 @@ public class ContextMobile extends Context {
         super(hub);
     }
 
-    public static class Builder {
-        HubMobile.Config config = new HubMobile.Config();
-        String endpoint;
-        //public AbstractCrypto crypto = null;
-        //        public AbstractMicroledgerList microledgers = null;
-        //        public AbstractPairwiseList pairwiseStorage = null;
-        //        public AbstractDID did = null;
-        //        public AbstractAnonCreds anoncreds = null;
-        //        public AbstractNonSecrets nonSecrets = null;
-        //        public String serverUri = null;
-        //        public byte[] credentials;
-        //        public P2PConnection p2p;
-        //        public int ioTimeout = BaseAgentConnection.IO_TIMEOUT;
-        //        public AbstractImmutableCollection storage = null;
+    @Override
+    public HubMobile getCurrentHub() {
+        return (HubMobile) super.getCurrentHub();
+    }
 
-        public ContextMobile.Builder setCrypto(AbstractCrypto crypto) {
+
+    public static class MobileBuilder  {
+
+        HubMobile.MobileConfig config = new HubMobile.MobileConfig();
+        String endpoint;
+
+        public MobileBuilder setCrypto(AbstractCrypto crypto) {
             this.config.crypto = crypto;
             return this;
         }
 
-        public ContextMobile.Builder setMicroledgers(AbstractMicroledgerList microledgers) {
+        public MobileBuilder setMicroledgers(AbstractMicroledgerList microledgers) {
             this.config.microledgers = microledgers;
             return this;
         }
 
-        public ContextMobile.Builder setServerUri(String serverUri) {
+        public MobileBuilder setServerUri(String serverUri) {
             this.config.serverUri = serverUri;
             return this;
         }
 
-        public ContextMobile.Builder setCredentials(byte[] credentials) {
+        public MobileBuilder setCredentials(byte[] credentials) {
             this.config.credentials = credentials;
             return this;
         }
 
-        public ContextMobile.Builder setP2p(P2PConnection p2p) {
+        public MobileBuilder setP2p(P2PConnection p2p) {
             this.config.p2p = p2p;
             return this;
         }
 
-        public ContextMobile.Builder setTimeoutSec(int timeoutSec) {
+        public MobileBuilder setTimeoutSec(int timeoutSec) {
             this.config.ioTimeout = timeoutSec;
             return this;
         }
-        public ContextMobile.Builder setEndpoint(String endpoint) {
-            this.endpoint = endpoint;
+        public MobileBuilder setEndpoint(String endpoint) {
+            this.config.endpoint = endpoint;
             return this;
         }
 
         public ContextMobile build() {
             HubMobile hubMobile =  new HubMobile(this.config);
-            hubMobile.endpoint = endpoint;
+            System.out.println("build mylog299  endpoint" + endpoint);
             return new ContextMobile(hubMobile);
         }
     }
 
-    public static ContextMobile.Builder builderAndroid() {
-        return new ContextMobile.Builder();
+    public static ContextMobile.MobileBuilder builderMobile() {
+        return new ContextMobile.MobileBuilder();
     }
 
 }

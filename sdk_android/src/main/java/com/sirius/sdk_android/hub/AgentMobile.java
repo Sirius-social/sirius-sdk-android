@@ -1,5 +1,8 @@
 package com.sirius.sdk_android.hub;
 
+import android.util.Log;
+
+import com.sirius.sdk.agent.AbstractAgent;
 import com.sirius.sdk.agent.Agent;
 import com.sirius.sdk.agent.RemoteParams;
 import com.sirius.sdk.agent.connections.AgentEvents;
@@ -18,7 +21,7 @@ import com.sirius.sdk.agent.pairwise.Pairwise;
 import com.sirius.sdk.agent.pairwise.TheirEndpoint;
 import com.sirius.sdk.agent.pairwise.WalletPairwiseList;
 import com.sirius.sdk.agent.storages.InWalletImmutableCollection;
-import com.sirius.sdk.agent.wallet.DynamicWallet;
+import com.sirius.sdk.agent.wallet.AbstractWallet;
 import com.sirius.sdk.encryption.P2PConnection;
 import com.sirius.sdk.errors.sirius_exceptions.SiriusConnectionClosed;
 import com.sirius.sdk.errors.sirius_exceptions.SiriusFieldValueError;
@@ -37,74 +40,45 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AgentMobile extends Agent {
-
+public class AgentMobile extends AbstractAgent {
 
     AgentMobileConnection rpcMobile;
-    String serverAddress;
-    byte[] credentials;
-    P2PConnection p2p;
-    int timeout = BaseAgentConnection.IO_TIMEOUT;
-    String name;
     String endpoint;
-    List<Endpoint> endpoints;
-
-    Map<String, Ledger> ledgers = new HashMap<>();
-    WalletPairwiseList pairwiseList;
-    MicroledgerList microledgers;
-    AbstractImmutableCollection storage;
-    AgentEvents events;
-    MobileWallet wallet;
 
     public AgentMobile(String serverAddress, byte[] credentials, P2PConnection p2p, int timeout, AbstractImmutableCollection storage, String name) {
         super(serverAddress, credentials, p2p, timeout, storage, name);
-        this.serverAddress = serverAddress;
-        this.credentials = credentials;
-        this.p2p = p2p;
-        this.timeout = timeout;
-        this.storage = storage;
-        this.name = name;
-
     }
 
     public AgentMobile(String serverAddress, byte[] credentials, P2PConnection p2p, int timeout, AbstractImmutableCollection storage) {
         super(serverAddress, credentials, p2p, timeout, storage);
-        this.serverAddress = serverAddress;
-        this.credentials = credentials;
-        this.p2p = p2p;
-        this.timeout = timeout;
-        this.storage = storage;
     }
 
     public AgentMobile(String serverAddress, byte[] credentials, P2PConnection p2p, int timeout) {
         super(serverAddress, credentials, p2p, timeout);
-        this.serverAddress = serverAddress;
-        this.credentials = credentials;
-        this.p2p = p2p;
-        this.timeout = timeout;
     }
 
-    public Message createMessage(String endpoint){
-        String message = "{\"id\":\"d0286a56e30e43708832720228a0c82f\",\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"~endpoints\":[{\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"id\":\"router\",\"mime-type\":\"application\\/json\",\"data\":{\"json\":{\"address\":\"https:\\/\\/demo.socialsirius.com\\/endpoint\",\"frontend_routing_key\":\"2JqbvsnmrW8gJUQCdu9Gpavwo1m1MXz8QLbnjKN6aLLS\",\"routing_keys\":[{\"is_default\":true,\"routing_key\":\"GR8fGJWoSXo4abmgKuz7fJ5ZXgLyruMSLnEZxRuKT2Pi\"}]}}},{\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"id\":\"default\",\"mime-type\":\"application\\/json\",\"data\":{\"json\":{\"address\":\""+endpoint+"\"}}}],\"~networks\":[\"test_network\"],\"~proxy\":[{\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"id\":\"reverse\",\"mime-type\":\"application\\/json\",\"data\":{\"json\":{\"address\":\"redis:\\/\\/redis\\/d3dad5a4b7e54c57bd091296cac80995\"}}},{\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"id\":\"sub-protocol\",\"mime-type\":\"application\\/json\",\"data\":{\"json\":{\"address\":\"redis:\\/\\/redis\\/2f43cbf3948349fe8ad25baa5e9a8a37\"}}}],\"@id\":\"696131cf-cc34-44e7-9b0f-62c300ca3d58\"}";
-        return   new  Message(message);
+    public Message createMessage(String endpoint) {
+        String message = "{\"id\":\"d0286a56e30e43708832720228a0c82f\",\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"~endpoints\":[{\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"id\":\"router\",\"mime-type\":\"application\\/json\",\"data\":{\"json\":{\"address\":\"https:\\/\\/demo.socialsirius.com\\/endpoint\",\"frontend_routing_key\":\"2JqbvsnmrW8gJUQCdu9Gpavwo1m1MXz8QLbnjKN6aLLS\",\"routing_keys\":[{\"is_default\":true,\"routing_key\":\"GR8fGJWoSXo4abmgKuz7fJ5ZXgLyruMSLnEZxRuKT2Pi\"}]}}},{\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"id\":\"default\",\"mime-type\":\"application\\/json\",\"data\":{\"json\":{\"address\":\"" + endpoint + "\"}}}],\"~networks\":[\"test_network\"],\"~proxy\":[{\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"id\":\"reverse\",\"mime-type\":\"application\\/json\",\"data\":{\"json\":{\"address\":\"redis:\\/\\/redis\\/d3dad5a4b7e54c57bd091296cac80995\"}}},{\"@type\":\"did:sov:BzCbsNYhMrjHiqZDTUASHg;spec\\/sirius_rpc\\/1.0\\/context\",\"id\":\"sub-protocol\",\"mime-type\":\"application\\/json\",\"data\":{\"json\":{\"address\":\"redis:\\/\\/redis\\/2f43cbf3948349fe8ad25baa5e9a8a37\"}}}],\"@id\":\"696131cf-cc34-44e7-9b0f-62c300ca3d58\"}";
+        return new Message(message);
     }
 
     @Override
     public void open() {
-       // try {
-            rpcMobile = new AgentMobileConnection(serverAddress, credentials, p2p, timeout);
-            rpcMobile.setup(createMessage(endpoint));
-           // rpcMobile.create();
-            endpoints = rpcMobile.getEndpoints();
-            wallet = new MobileWallet(rpcMobile);
-            if (storage == null) {
-                storage = new InWalletImmutableCollection(wallet.getNonSecrets());
-            }
-            for (String network : rpcMobile.getNetworks()) {
-                ledgers.put(network, new Ledger(network, wallet.getLedger(), wallet.getAnoncreds(), wallet.getCache(), storage));
-            }
-            pairwiseList = new WalletPairwiseList(wallet.getPairwise(), wallet.getDid());
-            microledgers = new MicroledgerList(rpcMobile);
+        // try {
+        rpcMobile = new AgentMobileConnection(getServerAddress(), getCredentials(), getP2p(), getTimeout());
+        rpcMobile.setup(createMessage(endpoint));
+        Log.d("mylog299","agentMobileOpen endpoint="+endpoint);
+        // rpcMobile.create();
+        setEndpoints(rpcMobile.getEndpoints());
+        setWallet(new MobileWallet(rpcMobile));
+        if (getStorage() == null) {
+            setStorage(new InWalletImmutableCollection(getWallet().getNonSecrets()));
+        }
+        for (String network : rpcMobile.getNetworks()) {
+            getLedgers().put(network, new Ledger(network, getWallet().getLedger(), getWallet().getAnoncreds(), getWallet().getCache(), getStorage()));
+        }
+        setPairwiseList(new WalletPairwiseList(getWallet().getPairwise(), getWallet().getDid()));
+        setMicroledgers(new MicroledgerList(rpcMobile));
       /*  } catch (SiriusFieldValueError siriusFieldValueError) {
             siriusFieldValueError.printStackTrace();
         }*/
@@ -115,8 +89,10 @@ public class AgentMobile extends Agent {
         return rpcMobile != null && rpcMobile.isOpen();
     }
 
-    public String getName() {
-        return name;
+
+    @Override
+    public MobileWallet getWallet() {
+        return (MobileWallet) super.getWallet();
     }
 
     public boolean ping() {
@@ -171,10 +147,10 @@ public class AgentMobile extends Agent {
         if (rpcMobile != null) {
             rpcMobile.close();
         }
-        if (events != null) {
+       /* if (events != null) {
             events.close();
         }
-        wallet = null;
+        wallet = null;*/
     }
 
 
@@ -187,59 +163,17 @@ public class AgentMobile extends Agent {
         throw new RuntimeException("Open Agent at first!");
     }
 
-    public AgentEvents getEvents() {
-        checkIsOpen();
-        return events;
-    }
 
-    public MobileWallet getMobileWallet() {
-        checkIsOpen();
-        return wallet;
-    }
-
-    public List<Endpoint> getEndpoints() {
-        checkIsOpen();
-        return endpoints;
-    }
-
-    public Map<String, Ledger> getLedgers() {
-        checkIsOpen();
-        return ledgers;
-    }
-
-
-    public AbstractMicroledgerList getMicroledgers() {
-        checkIsOpen();
-        return microledgers;
-    }
-
-    public WalletPairwiseList getPairwiseList() {
-        checkIsOpen();
-        return pairwiseList;
-    }
-
-    public Listener subscribe() {
-        checkIsOpen();
-        events = new AgentEvents(serverAddress, credentials, p2p, timeout);
-        try {
-            events.create();
-        } catch (SiriusFieldValueError siriusFieldValueError) {
-            siriusFieldValueError.printStackTrace();
-        }
-        return new Listener(events, pairwiseList);
-
-    }
-
-    public String generateQrCode(String value){
+    public String generateQrCode(String value) {
         checkIsOpen();
         RemoteParams params = RemoteParams.RemoteParamsBuilder.create()
-                .add("value",value)
+                .add("value", value)
                 .build();
         try {
-            Object response =  rpcMobile.remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/admin/1.0/generate_qr",params);
-            if(response instanceof JSONObject){
+            Object response = rpcMobile.remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/admin/1.0/generate_qr", params);
+            if (response instanceof JSONObject) {
                 JSONObject responseObject = (JSONObject) response;
-                return  responseObject.getString("url");
+                return responseObject.getString("url");
             }
         } catch (Exception siriusConnectionClosed) {
             siriusConnectionClosed.printStackTrace();
@@ -249,86 +183,88 @@ public class AgentMobile extends Agent {
 
     @Override
     public TheirEndpointCoProtocolTransport spawn(String myVerkey, TheirEndpoint endpoint) {
-        AgentRPC new_rpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
+      /*  AgentRPC new_rpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
         try {
             new_rpc.create();
             return new TheirEndpointCoProtocolTransport(myVerkey, endpoint, new_rpc);
         } catch (SiriusFieldValueError siriusFieldValueError) {
             siriusFieldValueError.printStackTrace();
-        }
+        }*/
         return null;
     }
 
     @Override
     public PairwiseCoProtocolTransport spawn(Pairwise pairwise) {
-        AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
+     /*   AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
         try {
             newRpc.create();
             return new PairwiseCoProtocolTransport(pairwise, newRpc);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 
     @Override
     public ThreadBasedCoProtocolTransport spawn(String thid, Pairwise pairwise) {
-        AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
+       /* AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
         try {
             newRpc.create();
             return new ThreadBasedCoProtocolTransport(thid, pairwise, newRpc, null);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 
     @Override
     public ThreadBasedCoProtocolTransport spawn(String thid) {
-        AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
+      /*  AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
         try {
             newRpc.create();
             return new ThreadBasedCoProtocolTransport(thid, null, newRpc, null);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 
     @Override
     public ThreadBasedCoProtocolTransport spawn(String thid, Pairwise pairwise, String pthid) {
-        AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
+     /*   AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
         try {
             newRpc.create();
             return new ThreadBasedCoProtocolTransport(thid, pairwise, newRpc, pthid);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 
     @Override
     public ThreadBasedCoProtocolTransport spawn(String thid, String pthid) {
-        AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
+      /*  AgentRPC newRpc = new AgentRPC(serverAddress, credentials, p2p, timeout);
         try {
             newRpc.create();
             return new ThreadBasedCoProtocolTransport(thid, null, newRpc, pthid);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
         return null;
     }
 
     /**
      * Acquire N resources given by names
-     * @param resources names of resources that you are going to lock
-     * @param lockTimeoutSec max timeout resources will be locked. Resources will be automatically unlocked on expire
+     *
+     * @param resources       names of resources that you are going to lock
+     * @param lockTimeoutSec  max timeout resources will be locked. Resources will be automatically unlocked on expire
      * @param enterTimeoutSec timeout to wait resources are released
      * @return
      */
     public Pair<Boolean, List<String>> acquire(List<String> resources, Double lockTimeoutSec, Double enterTimeoutSec) {
         checkIsOpen();
-        return new RemoteCallWrapper<Pair<Boolean, List<String>>>(rpcMobile){}.
+        return new RemoteCallWrapper<Pair<Boolean, List<String>>>(rpcMobile) {
+        }.
                 remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/admin/1.0/acquire",
                         RemoteParams.RemoteParamsBuilder.create()
                                 .add("names", resources)
@@ -341,7 +277,8 @@ public class AgentMobile extends Agent {
     }
 
     public void release() {
-        new RemoteCallWrapper<Void>(rpcMobile){}.
+        new RemoteCallWrapper<Void>(rpcMobile) {
+        }.
                 remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/admin/1.0/release");
     }
 

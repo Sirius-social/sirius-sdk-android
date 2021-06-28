@@ -1,6 +1,7 @@
 package com.sirius.sdk_android.walletUseCase
 
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sirius.sdk_android.IndyWallet
@@ -356,8 +357,7 @@ class WalletUseCase constructor(
 
 
     fun createContext(indyEndpoint: String) {
-        context = ContextMobile.builderAndroid().setEndpoint(indyEndpoint).build()
-        //Log.d("mylog299", "createContext context crypto=" + context.crypto)
+        context = ContextMobile.builderMobile().setEndpoint(indyEndpoint).build()
     }
 
     fun createAndStoreMyDid(): CreateAndStoreMyDidResult? {

@@ -2,6 +2,8 @@ package com.sirius.sdk_android.wallet;
 
 import com.sirius.sdk.agent.RemoteParams;
 import com.sirius.sdk.agent.connections.BaseAgentConnection;
+import com.sirius.sdk.agent.wallet.AbstractWallet;
+import com.sirius.sdk.hub.AbstractHub;
 import com.sirius.sdk_android.wallet.impl.MobileAnonCredsProxy;
 import com.sirius.sdk_android.wallet.impl.MobileCacheProxy;
 import com.sirius.sdk_android.wallet.impl.MobileCryptoProxy;
@@ -10,7 +12,8 @@ import com.sirius.sdk_android.wallet.impl.MobileLedgerProxy;
 import com.sirius.sdk_android.wallet.impl.MobileNonSecretsProxy;
 import com.sirius.sdk_android.wallet.impl.MobilePairwiseProxy;
 
-public class MobileWallet {
+public class MobileWallet extends AbstractWallet {
+
     MobileAnonCredsProxy anoncreds;
     MobileDIDProxy did;
     MobileCryptoProxy crypto;
