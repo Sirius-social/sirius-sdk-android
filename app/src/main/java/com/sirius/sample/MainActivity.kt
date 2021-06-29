@@ -1,53 +1,58 @@
 package com.sirius.sample
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.TextView
-import com.sirius.sdk_android.SDK
+import androidx.appcompat.app.AppCompatActivity
+import com.sirius.sample.fragments.MenuFragment
+import com.sirius.sample.service.WebSocketService
+import com.sirius.sdk_android.SiriusSDK
 
 class MainActivity : AppCompatActivity() {
-
-    lateinit var text: TextView
-    lateinit var button: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        button = findViewById(R.id.generateQrBtn)
-        text = findViewById(R.id.generateText)
         initSdk()
-        button.setOnClickListener {
-            generateQr()
-          //  QrTest()
-        }
+        openWallet()
+        startSocketService()
+        supportFragmentManager.beginTransaction().replace(R.id.mainFrame, MenuFragment()).commit()
     }
 
+    private fun startSocketService() {
+        val intent = Intent(this, WebSocketService::class.java)
+        startService(intent)
+    }
     fun QrTest(){
         Thread(Runnable {
-            SDK.getInstance().QrTest()
+            SiriusSDK.getInstance().QrTest()
         }).start()
 
     }
 
     fun purposeTest(){
         Thread(Runnable {
-            SDK.getInstance().proposeTest()
+            SiriusSDK.getInstance().proposeTest()
         }).start()
 
     }
 
-    fun generateQr(){
-        val wallet = SDK.getInstance().ensureWalletOpen("123", "123")
-        Log.d("mylog2090","wallet="+wallet);
-        val inviteText = SDK.getInstance().generateInvitation("SampleLabale")
-        text.text = inviteText
-        SDK.getInstance().closeWallet(wallet)
+    override fun onDestroy() {
+        super.onDestroy()
+        closeWallet()
     }
 
+
+    fun closeWallet(){
+        SiriusSDK.getInstance().walletUseCase.closeWallet()
+    }
+
+    fun openWallet(){
+         SiriusSDK.getInstance().walletUseCase.ensureWalletOpen("123", "123")
+    }
     fun initSdk() {
         val dirPath= App.getContext().filesDir.absolutePath
-        SDK.getInstance().initialize("https",dirPath)
+        SiriusSDK.getInstance().
+        initialize("https://socialsirius.com/endpoint/48fa9281-d6b1-4b17-901d-7db9e64b70b1/",
+            "https://socialsirius.com",dirPath)
     }
 }

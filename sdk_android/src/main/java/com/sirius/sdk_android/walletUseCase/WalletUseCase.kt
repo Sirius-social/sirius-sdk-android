@@ -29,7 +29,7 @@ class WalletUseCase constructor(
 ) {
 
     companion object {
-        var instanceWalletUseCase: WalletUseCase? = null
+        private var instanceWalletUseCase: WalletUseCase? = null
 
         @JvmStatic
         fun getInstance(): WalletUseCase {
@@ -40,12 +40,12 @@ class WalletUseCase constructor(
         }
     }
 
-    lateinit var context: ContextMobile
+
 
     val OPEN_WALLET_REQUEST_CODE = 1007
     val SCAN_INVITATION_WALLET_REQUEST_CODE = 1009
     var myWallet: Wallet? = null
-
+    lateinit var context: ContextMobile
     private var dirPath: String = "wallet"
     private var exportdirPath: String = "export"
     private var genesisPath: String = "genesis"
@@ -356,9 +356,7 @@ class WalletUseCase constructor(
     }
 
 
-    fun createContext(indyEndpoint: String) {
-        context = ContextMobile.builderMobile().setEndpoint(indyEndpoint).build()
-    }
+
 
     fun createAndStoreMyDid(): CreateAndStoreMyDidResult? {
         try {
@@ -378,43 +376,25 @@ class WalletUseCase constructor(
         return null
     }
 
-    fun generateQrCodeInvitation(label: String): String? {
-        // Ключ установки соединения. Аналог Bob Pre-key
-        //см. [2.4. Keys] https://signal.org/docs/specifications/x3dh/
-        System.out.println("mylog299 generateQrCodeInvitation context crypto=" + context.crypto)
-        val connectionKey = context.crypto.createKey()
-        // val sm = Inviter(context, Pairwise.Me("myDid", "myVerkey"), connectionKey, myEndpoint)
-        // Теперь сформируем приглашение для других через 0160
-        // шаг 1 - определимся какой endpoint мы возьмем, для простоты возьмем endpoint без доп шифрования
-        val endpoints = context.endpoints
-        var myEndpoint: com.sirius.sdk.agent.connections.Endpoint? = null
-        for (e in endpoints) {
-            if (e.routingKeys.isEmpty()) {
-                myEndpoint = e
-                break
-            }
+
+
+    fun ensureWalletOpen(userJid: String, pin: String): Wallet? {
+        return if (isWalletExist(userJid)) {
+            openWallet(userJid, pin)
+        } else {
+            createWallet(userJid, pin)
+            openWallet(userJid, pin)
         }
-        System.out.println("mylog299 myEndpoint="+myEndpoint)
-        if (myEndpoint == null) return null
-        // шаг 2 - создаем приглашение
-        val invitation =
-            com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation.builder()
-                .setLabel(label)
-                .setRecipientKeys(listOf(connectionKey)).setEndpoint(myEndpoint.address).build()
-
-        // шаг 2 - создаем приглашение
-
-        // шаг 3 - согласно Aries-0160 генерируем URL
-
-        // Establish connection with Sirius Communicator via standard Aries protocol
-        // https://github.com/hyperledger/aries-rfcs/blob/master/features/0160-connection-protocol/README.md#states
-        System.out.println("mylog299 invitation="+invitation)
-        System.out.println("mylog299 invitation="+invitation.messageObj)
-        System.out.println("mylog299 invitation="+invitation.endpoint())
-        val qrContent = invitation.invitationUrl()
-        System.out.println("mylog299 qrContent="+qrContent)
-        return qrContent
-
     }
+
+    fun closeWallet() {
+        try {
+            myWallet?.closeWallet()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+    }
+
+
 
 }
