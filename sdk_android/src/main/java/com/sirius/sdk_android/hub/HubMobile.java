@@ -2,20 +2,9 @@ package com.sirius.sdk_android.hub;
 
 
 
-import android.util.Log;
 
-import com.sirius.sdk.agent.AbstractAgent;
-import com.sirius.sdk.agent.microledgers.AbstractMicroledgerList;
-import com.sirius.sdk.agent.pairwise.AbstractPairwiseList;
-import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractAnonCreds;
-import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractCache;
-import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractCrypto;
-import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractDID;
-import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractNonSecrets;
-import com.sirius.sdk.encryption.P2PConnection;
 import com.sirius.sdk.hub.AbstractHub;
-import com.sirius.sdk.hub.Hub;
-import com.sirius.sdk.storage.abstract_storage.AbstractImmutableCollection;
+
 
 public class HubMobile extends AbstractHub {
 

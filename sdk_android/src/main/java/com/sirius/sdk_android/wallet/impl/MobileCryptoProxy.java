@@ -1,21 +1,29 @@
 package com.sirius.sdk_android.wallet.impl;
 
+import android.util.Log;
+
 import com.sirius.sdk.agent.RemoteParams;
 import com.sirius.sdk.agent.connections.BaseAgentConnection;
 import com.sirius.sdk.agent.connections.RemoteCallWrapper;
 import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractCrypto;
 import com.sirius.sdk_android.walletUseCase.WalletUseCase;
 
+import org.hyperledger.indy.sdk.IndyException;
+import org.hyperledger.indy.sdk.crypto.Crypto;
 import org.hyperledger.indy.sdk.did.DidResults;
+import org.hyperledger.indy.sdk.wallet.Wallet;
+import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class MobileCryptoProxy extends AbstractCrypto   {
 
     BaseAgentConnection rpc;
 
-    public MobileCryptoProxy(BaseAgentConnection rpc) {
-        this.rpc = rpc;
+    public MobileCryptoProxy() {
+
     }
 
 
@@ -82,19 +90,35 @@ public class MobileCryptoProxy extends AbstractCrypto   {
 
     @Override
     public byte[] packMessage(Object message, List<String> recipentVerkeys, String senderVerkey) {
-        return new RemoteCallWrapper<byte[]>(rpc){}.
-                remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/pack_message",
-                        RemoteParams.RemoteParamsBuilder.create()
-                                .add("message", message)
-                                .add("recipient_verkeys", recipentVerkeys)
-                                .add("sender_verkey", senderVerkey));
+        String listString= recipentVerkeys.toString();
+        Log.d("mylog2090","listString="+listString.toString());
+        try {
+            byte[]  byteTotransfer = Crypto.packMessage(WalletUseCase.getInstance().getMyWallet(), "[\"" + recipentVerkeys.get(0) + "\"]", senderVerkey, message.toString().getBytes(StandardCharsets.UTF_8)).get();
+            return byteTotransfer;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (IndyException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
     public String unpackMessage(byte[] jwe) {
-        return new RemoteCallWrapper<String>(rpc){}.
-                remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/unpack_message",
-                        RemoteParams.RemoteParamsBuilder.create()
-                                .add("jwe", jwe));
+                try{
+                    String jweString = new String(jwe, StandardCharsets.UTF_8);
+                    JSONObject jsonObject = new JSONObject(jweString );
+                    Wallet wallet = WalletUseCase.getInstance().getMyWallet();
+                    byte[] byteMess = Crypto.unpackMessage(wallet, jsonObject.toString().getBytes(StandardCharsets.UTF_8)).get();
+                    String unpackedMess = new String(byteMess);
+                    Log.d("mylog900", "unpackedMess=" + unpackedMess);
+                    return unpackedMess;
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+           return null;
     }
 }

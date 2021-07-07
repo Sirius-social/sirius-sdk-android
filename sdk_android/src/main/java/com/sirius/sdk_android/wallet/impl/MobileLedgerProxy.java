@@ -16,8 +16,8 @@ public class MobileLedgerProxy extends AbstractLedger  {
 
     BaseAgentConnection rpc;
 
-    public MobileLedgerProxy(BaseAgentConnection rpc) {
-        this.rpc = rpc;
+    public MobileLedgerProxy() {
+
     }
 
 

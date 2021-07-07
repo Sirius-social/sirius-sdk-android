@@ -15,8 +15,8 @@ public class MobileNonSecretsProxy extends AbstractNonSecrets  {
 
     BaseAgentConnection rpc;
 
-    public MobileNonSecretsProxy(BaseAgentConnection rpc) {
-        this.rpc = rpc;
+    public MobileNonSecretsProxy() {
+
     }
 
 

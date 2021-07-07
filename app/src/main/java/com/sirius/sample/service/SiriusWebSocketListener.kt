@@ -1,8 +1,11 @@
 package com.sirius.sample.service
 
 import android.util.Log
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import com.neovisionaries.ws.client.*
-
+import com.sirius.sdk_android.SiriusSDK
 
 
 class SiriusWebSocketListener() : WebSocketListener {
@@ -28,7 +31,12 @@ class SiriusWebSocketListener() : WebSocketListener {
     }
 
     @Throws(Exception::class)
-    override fun onDisconnected(websocket: WebSocket, serverCloseFrame: WebSocketFrame, clientCloseFrame: WebSocketFrame, closedByServer: Boolean) {
+    override fun onDisconnected(
+        websocket: WebSocket,
+        serverCloseFrame: WebSocketFrame,
+        clientCloseFrame: WebSocketFrame,
+        closedByServer: Boolean
+    ) {
         Log.d(TAG, "onDisconnected websocket=$websocket closedByServer=$closedByServer")
     }
 
@@ -48,16 +56,28 @@ class SiriusWebSocketListener() : WebSocketListener {
     }
 
     @Throws(Exception::class)
-    override fun onFrameError(websocket: WebSocket, cause: WebSocketException, frame: WebSocketFrame) {
+    override fun onFrameError(
+        websocket: WebSocket,
+        cause: WebSocketException,
+        frame: WebSocketFrame
+    ) {
         Log.d(TAG, "onFrameError websocket=$websocket frame=$frame")
     }
 
     @Throws(Exception::class)
-    override fun onMessageError(websocket: WebSocket, cause: WebSocketException, frames: List<WebSocketFrame>) {
+    override fun onMessageError(
+        websocket: WebSocket,
+        cause: WebSocketException,
+        frames: List<WebSocketFrame>
+    ) {
     }
 
     @Throws(Exception::class)
-    override fun onMessageDecompressionError(websocket: WebSocket, cause: WebSocketException, compressed: ByteArray) {
+    override fun onMessageDecompressionError(
+        websocket: WebSocket,
+        cause: WebSocketException,
+        compressed: ByteArray
+    ) {
     }
 
     @Throws(Exception::class)
@@ -90,12 +110,20 @@ class SiriusWebSocketListener() : WebSocketListener {
     }
 
     @Throws(Exception::class)
-    override fun onTextMessageError(websocket: WebSocket, cause: WebSocketException, data: ByteArray) {
+    override fun onTextMessageError(
+        websocket: WebSocket,
+        cause: WebSocketException,
+        data: ByteArray
+    ) {
         Log.d(TAG, "onTextMessageError websocket=$cause cause=$data data")
     }
 
     @Throws(Exception::class)
-    override fun onSendError(websocket: WebSocket, cause: WebSocketException, frame: WebSocketFrame) {
+    override fun onSendError(
+        websocket: WebSocket,
+        cause: WebSocketException,
+        frame: WebSocketFrame
+    ) {
     }
 
     @Throws(Exception::class)
@@ -108,14 +136,64 @@ class SiriusWebSocketListener() : WebSocketListener {
     }
 
     @Throws(Exception::class)
-    override fun onSendingHandshake(websocket: WebSocket, requestLine: String, headers: List<Array<String>>) {
+    override fun onSendingHandshake(
+        websocket: WebSocket,
+        requestLine: String,
+        headers: List<Array<String>>
+    ) {
     }
 
     @Throws(Exception::class)
     override fun onTextFrame(websocket: WebSocket, frame: WebSocketFrame) {
-        Log.d(TAG, "onTextFrame websocket=$websocket frame=$frame frame.payloadText=${frame.payloadText}")
+        Log.d(
+            TAG,
+            "onTextFrame websocket=$websocket frame=$frame frame.payloadText=${frame.payloadText}"
+        )
         val payloadText = frame.payloadText
+        val messageWrapper = parseSocketMessage(payloadText)
+        Log.d("mylog2090","messageWrapper?.contentType="+messageWrapper?.contentType);
+        if(messageWrapper?.topic == "indy.transport"){
+            Log.d("mylog2090","messageWrapper?.messageString="+messageWrapper?.messageString);
+            SiriusSDK.getInstance().chanelUseCase.parseMessage(messageWrapper?.messageFromMessageString ?: "")
+        }
+    }
 
+    fun parseSocketMessage(messagePayload: String): ChannelMessageWrapper? {
+        try {
+            val gson = GsonBuilder().create()
+            val jelem: JsonElement = gson.fromJson(messagePayload, JsonElement::class.java)
+            val jobj = jelem.asJsonObject
+            val topic = jobj["topic"].asString ?: ""
+            val messageStrig = jobj["event"].toString()
+            val did: String? = if (jobj.has("did")) jobj["did"].asString else null
+            val contentType: String =
+                if (jobj.has("content_type")) jobj["content_type"].asString else ""
+            val meta = ChannelMessageWrapper.MessageWrapperMeta()
+            try {
+                val metadata = if (jobj.has("meta")) {
+                    if (!jobj["meta"].isJsonNull) {
+                        jobj["meta"].asJsonObject
+                    } else {
+                        JsonObject()
+                    }
+                } else JsonObject()
+                meta.uid = if (metadata.has("uid")) metadata["uid"].asString else null
+                meta.utc = if (metadata.has("utc")) metadata["utc"].asDouble else null
+                meta.content_type =
+                    if (metadata.has("content_type")) metadata["content_type"].asString else null
+                meta.session_id =
+                    if (metadata.has("session_id")) metadata["session_id"].asString else null
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            return ChannelMessageWrapper(topic, messageStrig, contentType, did, meta)
+
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 
     @Throws(Exception::class)

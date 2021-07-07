@@ -22,6 +22,7 @@ import shadow.org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * RPC service.
@@ -43,6 +44,11 @@ public class AgentMobileConnection extends BaseAgentConnection {
 
     public List<Endpoint> getEndpoints() {
         return endpoints;
+    }
+
+    @Override
+    public ListenerConnector getConnector() {
+        return (ListenerConnector) super.getConnector();
     }
 
     @Override
@@ -215,6 +221,27 @@ public class AgentMobileConnection extends BaseAgentConnection {
 
     }
 
+    public void create() throws SiriusFieldValueError {
+        /*CompletableFuture<byte[]> feat = getConnector().read();
+        getConnector().open();
+        byte[] payload = new byte[0];
+        try {
+            payload = feat.get(getTimeout(), TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }
+        String msgString = new String(payload, StandardCharsets.UTF_8);
+        //log.log(Level.INFO, "Received message: " + msgString);
+        Message context = new Message(msgString);
+        if (context.getType()==null){
+            throw new SiriusFieldValueError("message @type is empty");
+        }
+        if(!BaseAgentConnection.MSG_TYPE_CONTEXT.equals(context.getType())){
+            throw new SiriusFieldValueError("message @type not equal "+MSG_TYPE_CONTEXT);
+        }
+        setup(context);*/
+    }
+
     /**
      * Send Message to other Indy compatible agent
      *
@@ -305,6 +332,11 @@ public class AgentMobileConnection extends BaseAgentConnection {
         return null;
     }
 
+    @Override
+    public CompletableFuture<Message> pull() throws SiriusConnectionClosed, SiriusInvalidPayloadStructure {
+        return null;
+    }
+
     public void startProtocolWithThreads(List<String> threads, int timeToLiveSec) {
         try {
             this.remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/start_protocol",
@@ -329,9 +361,6 @@ public class AgentMobileConnection extends BaseAgentConnection {
         }
     }
 
-    public void stopProtocolWithThreads(List<String> threads) {
-        stopProtocolWithThreads(threads, false);
-    }
 
     public void startProtocolWithThreading(String thid, int timeToLiveSec) {
         try {

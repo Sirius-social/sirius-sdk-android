@@ -1,7 +1,6 @@
 package com.sirius.sdk_android.walletUseCase
 
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.sirius.sdk_android.IndyWallet
@@ -10,7 +9,6 @@ import com.sirius.sdk_android.models.KeyDidRecord
 import com.sirius.sdk_android.models.WalletRecordSearch
 import com.sirius.sdk_android.utils.FileUtils
 import com.sirius.sdk_android.utils.HashUtils
-
 import org.hyperledger.indy.sdk.IndyException
 import org.hyperledger.indy.sdk.did.Did
 import org.hyperledger.indy.sdk.did.DidResults.CreateAndStoreMyDidResult
@@ -41,7 +39,6 @@ class WalletUseCase constructor(
     }
 
 
-
     val OPEN_WALLET_REQUEST_CODE = 1007
     val SCAN_INVITATION_WALLET_REQUEST_CODE = 1009
     var myWallet: Wallet? = null
@@ -49,10 +46,10 @@ class WalletUseCase constructor(
     private var dirPath: String = "wallet"
     private var exportdirPath: String = "export"
     private var genesisPath: String = "genesis"
-    fun setDirsPath(mainDirPath : String) {
-        this.dirPath = mainDirPath+ File.separator + "wallet"
-        this.exportdirPath =mainDirPath + File.separator + "export"
-        this.genesisPath = mainDirPath+ File.separator + "genesis"
+    fun setDirsPath(mainDirPath: String) {
+        this.dirPath = mainDirPath + File.separator + "wallet"
+        this.exportdirPath = mainDirPath + File.separator + "export"
+        this.genesisPath = mainDirPath + File.separator + "genesis"
     }
 
     fun exportWallet(userJid: String) {
@@ -82,7 +79,7 @@ class WalletUseCase constructor(
             FileUtils.forceDelete(projDir)
             //   FileUtils.deleteDirectory(projDir)
         } catch (e: java.lang.Exception) {
-           System.out.println("mylog2080 deleteWallet dirPath + File.separator + alias=" + e.message)
+            System.out.println("mylog2080 deleteWallet dirPath + File.separator + alias=" + e.message)
             e.printStackTrace()
         }
     }
@@ -195,7 +192,7 @@ class WalletUseCase constructor(
 
     fun setUserResourses(resources: String, afterSet: (sessionId: String) -> Unit) {
         var userSessionId = resources
-       // Log.d("mylog900", "setUserResourses from Prefs userSessionId=$userSessionId")
+        // Log.d("mylog900", "setUserResourses from Prefs userSessionId=$userSessionId")
         if (userSessionId.isNullOrEmpty()) {
             try {
                 val userSessionIdJson =
@@ -204,7 +201,7 @@ class WalletUseCase constructor(
                 val gson = Gson()
                 val didRecord = gson.fromJson(userSessionIdJson, KeyDidRecord::class.java)
                 userSessionId = didRecord.value
-               // Log.d("mylog900", "setUserResourses from Wallet userSessionId=$userSessionId")
+                // Log.d("mylog900", "setUserResourses from Wallet userSessionId=$userSessionId")
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             } catch (e: ExecutionException) {
@@ -225,7 +222,7 @@ class WalletUseCase constructor(
                         "{}"
                     ).get()
                 }
-               // Log.d("mylog900", "setUserResourses generateNew =$userSessionId")
+                // Log.d("mylog900", "setUserResourses generateNew =$userSessionId")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -355,7 +352,38 @@ class WalletUseCase constructor(
         }
     }
 
+    /*
+     public static  void generateMyDIDOnce(){
+         if( getMyDid().getDid()==null){
+             createAndStoreMyDid(getMyWallet());
+         }
+     }
+ */
+    /*  public static DidResults.CreateAndStoreMyDidResult getMyDid(){
 
+         DidResults.CreateAndStoreMyDidResult result = new DidResults.CreateAndStoreMyDidResult();
+     }*/
+    fun DIDForKey( key: String): String? {
+        var did: String? = null
+        try {
+            did = WalletRecord.get(myWallet, "key-to-did", key, "{}").get()
+            println("mylog900 DIDForKey key=$key did=$did")
+            if (did != null) {
+                val gson = Gson()
+                val didRecord = gson.fromJson(did, KeyDidRecord::class.java)
+                return didRecord.value
+            }
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        } catch (e: ExecutionException) {
+            e.printStackTrace()
+        } catch (e: IndyException) {
+            e.printStackTrace()
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        return did
+    }
 
 
     fun createAndStoreMyDid(): CreateAndStoreMyDidResult? {
@@ -364,7 +392,7 @@ class WalletUseCase constructor(
             val key = myDidResult.verkey
             val did = myDidResult.did
             WalletRecord.add(myWallet, "key-to-did", key, did, "{}").get()
-           // Log.d("mylog900", "createAndStoreMyDid key=$key did=$did")
+            // Log.d("mylog900", "createAndStoreMyDid key=$key did=$did")
             return myDidResult
         } catch (e: InterruptedException) {
             e.printStackTrace()
@@ -377,9 +405,15 @@ class WalletUseCase constructor(
     }
 
 
+    fun isWalletOpened(): Boolean {
+        return myWallet != null
+    }
 
     fun ensureWalletOpen(userJid: String, pin: String): Wallet? {
         return if (isWalletExist(userJid)) {
+            if(isWalletOpened()){
+                return myWallet
+            }
             openWallet(userJid, pin)
         } else {
             createWallet(userJid, pin)
@@ -390,11 +424,11 @@ class WalletUseCase constructor(
     fun closeWallet() {
         try {
             myWallet?.closeWallet()
+            myWallet = null
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
     }
-
 
 
 }

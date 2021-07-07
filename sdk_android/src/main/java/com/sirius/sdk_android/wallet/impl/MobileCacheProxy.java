@@ -11,8 +11,8 @@ public class MobileCacheProxy extends AbstractCache {
 
     BaseAgentConnection rpc;
 
-    public MobileCacheProxy(BaseAgentConnection rpc) {
-        this.rpc = rpc;
+    public MobileCacheProxy() {
+
     }
 
 

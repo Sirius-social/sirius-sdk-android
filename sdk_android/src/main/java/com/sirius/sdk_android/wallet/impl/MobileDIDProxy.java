@@ -17,8 +17,8 @@ import java.util.List;
 public class MobileDIDProxy extends AbstractDID  {
     BaseAgentConnection rpc;
 
-    public MobileDIDProxy(BaseAgentConnection rpc) {
-        this.rpc = rpc;
+    public MobileDIDProxy() {
+
     }
 
 

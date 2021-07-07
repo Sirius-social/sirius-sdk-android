@@ -19,8 +19,8 @@ public class MobileAnonCredsProxy extends AbstractAnonCreds {
 
     BaseAgentConnection rpc;
 
-    public MobileAnonCredsProxy(BaseAgentConnection rpc) {
-        this.rpc = rpc;
+    public MobileAnonCredsProxy() {
+
     }
 
 

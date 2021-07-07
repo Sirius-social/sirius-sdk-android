@@ -4,6 +4,7 @@ import android.util.Base64
 import android.util.Log
 import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation
 import com.sirius.sdk.messaging.Message
+import com.sirius.sdk_android.IndyWallet
 import com.sirius.sdk_android.hub.ContextMobile
 
 class InvitationUseCase {
@@ -74,12 +75,15 @@ class InvitationUseCase {
         return false
     }
 
-
+    var myConnectionKey : String? = null
+    var myDid : String? = null
     fun generateInvitation(label: String): String {
         // Ключ установки соединения. Аналог Bob Pre-key
         //см. [2.4. Keys] https://signal.org/docs/specifications/x3dh/
-        System.out.println("mylog299 generateQrCodeInvitation context crypto=" + WalletUseCase.getInstance().context.crypto)
+       // System.out.println("mylog299 generateQrCodeInvitation context crypto=" + WalletUseCase.getInstance().context.crypto)
         val connectionKey = WalletUseCase.getInstance().context.crypto.createKey()
+        this.myConnectionKey = connectionKey
+        this.myDid =  WalletUseCase.getInstance().DIDForKey(connectionKey)
         // val sm = Inviter(context, Pairwise.Me("myDid", "myVerkey"), connectionKey, myEndpoint)
         // Теперь сформируем приглашение для других через 0160
         // шаг 1 - определимся какой endpoint мы возьмем, для простоты возьмем endpoint без доп шифрования

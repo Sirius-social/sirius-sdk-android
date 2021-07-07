@@ -19,19 +19,19 @@ public class MobileWallet extends AbstractWallet {
     MobileCryptoProxy crypto;
     MobileCacheProxy cache;
     MobileLedgerProxy ledger;
-    BaseAgentConnection rpc;
+
     MobilePairwiseProxy pairwise;
     MobileNonSecretsProxy nonSecrets;
 
-    public MobileWallet(BaseAgentConnection agentRPC) {
+    public MobileWallet() {
 
-        did = new MobileDIDProxy(rpc);
-        crypto = new MobileCryptoProxy(rpc);
-        cache = new MobileCacheProxy(rpc);
-        pairwise = new MobilePairwiseProxy(rpc);
-        nonSecrets = new MobileNonSecretsProxy(rpc);
-        ledger = new MobileLedgerProxy(rpc);
-        anoncreds = new MobileAnonCredsProxy(rpc);
+        did = new MobileDIDProxy();
+        crypto = new MobileCryptoProxy();
+        cache = new MobileCacheProxy();
+        pairwise = new MobilePairwiseProxy();
+        nonSecrets = new MobileNonSecretsProxy();
+        ledger = new MobileLedgerProxy();
+        anoncreds = new MobileAnonCredsProxy();
     }
 
 
@@ -66,14 +66,14 @@ public class MobileWallet extends AbstractWallet {
     }
 
     public Object generateWalletKey(String seed){
-        RemoteParams params = RemoteParams.RemoteParamsBuilder.create()
+        /*RemoteParams params = RemoteParams.RemoteParamsBuilder.create()
                 .add("seed",seed)
                   .build();
         try {
             return rpc.remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/generate_wallet_key",params);
         } catch (Exception siriusConnectionClosed) {
             siriusConnectionClosed.printStackTrace();
-        }
+        }*/
         return null;
     }
 }

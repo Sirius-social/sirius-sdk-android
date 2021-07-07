@@ -22,6 +22,7 @@ import com.sirius.sdk.agent.pairwise.TheirEndpoint;
 import com.sirius.sdk.agent.pairwise.WalletPairwiseList;
 import com.sirius.sdk.agent.storages.InWalletImmutableCollection;
 import com.sirius.sdk.agent.wallet.AbstractWallet;
+import com.sirius.sdk.base.ListenerConnector;
 import com.sirius.sdk.encryption.P2PConnection;
 import com.sirius.sdk.errors.sirius_exceptions.SiriusConnectionClosed;
 import com.sirius.sdk.errors.sirius_exceptions.SiriusFieldValueError;
@@ -31,7 +32,10 @@ import com.sirius.sdk.messaging.Message;
 import com.sirius.sdk.storage.abstract_storage.AbstractImmutableCollection;
 import com.sirius.sdk.utils.Pair;
 import com.sirius.sdk_android.connections.AgentMobileConnection;
+import com.sirius.sdk_android.connections.AgentMobileEvents;
 import com.sirius.sdk_android.wallet.MobileWallet;
+import com.sirius.sdk_android.walletUseCase.InvitationUseCase;
+import com.sirius.sdk_android.walletUseCase.WalletUseCase;
 
 import org.json.JSONObject;
 
@@ -62,15 +66,27 @@ public class AgentMobile extends AbstractAgent {
         return new Message(message);
     }
 
+
+    public void sendMessageToEvents(String message ){
+        try {
+            Log.d("mylog2090"," getEvents()="+ getEvents());
+            Log.d("mylog2090"," getEvents().getConnector()="+ getEvents().getConnector());
+            getEvents().getConnector().onTextFrame(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     @Override
     public void open() {
         // try {
         rpcMobile = new AgentMobileConnection(getServerAddress(), getCredentials(), getP2p(), getTimeout());
         rpcMobile.setup(createMessage(endpoint));
-        Log.d("mylog299","agentMobileOpen endpoint="+endpoint);
+        Log.d("mylog299", "agentMobileOpen endpoint=" + endpoint);
         // rpcMobile.create();
         setEndpoints(rpcMobile.getEndpoints());
-        setWallet(new MobileWallet(rpcMobile));
+        setWallet(new MobileWallet());
         if (getStorage() == null) {
             setStorage(new InWalletImmutableCollection(getWallet().getNonSecrets()));
         }
@@ -86,7 +102,7 @@ public class AgentMobile extends AbstractAgent {
 
 
     public boolean isOpen() {
-        return rpcMobile != null && rpcMobile.isOpen();
+        return WalletUseCase.getInstance().getMyWallet() != null;
     }
 
 
@@ -95,8 +111,19 @@ public class AgentMobile extends AbstractAgent {
         return (MobileWallet) super.getWallet();
     }
 
+    @Override
+    public BaseAgentConnection createAgentEvents() {
+        return new AgentMobileEvents(getServerAddress(), getCredentials(), getP2p(), getTimeout());
+    }
+
+    @Override
+    public AgentMobileEvents getEvents() {
+        return (AgentMobileEvents)super.getEvents();
+    }
+
     public boolean ping() {
-        try {
+        return WalletUseCase.getInstance().getMyWallet() == null;
+        /*try {
             Object response = rpcMobile.remoteCall("did:sov:BzCbsNYhMrjHiqZDTUASHg;spec/sirius_rpc/1.0/ping_agent", null);
             if (response instanceof Boolean) {
                 return (boolean) response;
@@ -105,7 +132,7 @@ public class AgentMobile extends AbstractAgent {
         } catch (Exception siriusConnectionClosed) {
             siriusConnectionClosed.printStackTrace();
         }
-        return false;
+        return false;*/
     }
 
     /**
@@ -144,9 +171,7 @@ public class AgentMobile extends AbstractAgent {
 
 
     public void close() {
-        if (rpcMobile != null) {
-            rpcMobile.close();
-        }
+        WalletUseCase.getInstance().closeWallet();
        /* if (events != null) {
             events.close();
         }
@@ -155,17 +180,17 @@ public class AgentMobile extends AbstractAgent {
 
 
     public List<Endpoint> checkIsOpen() {
-        if (rpcMobile != null) {
-            if (rpcMobile.isOpen()) {
-                return rpcMobile.getEndpoints();
-            }
+        if (WalletUseCase.getInstance().isWalletOpened()) {
+            return rpcMobile.getEndpoints();
+        } else {
+            return null;
         }
-        throw new RuntimeException("Open Agent at first!");
     }
 
 
     public String generateQrCode(String value) {
-        checkIsOpen();
+        /*checkIsOpen();
+        InvitationUseCase.getInstance().generateInvitation()
         RemoteParams params = RemoteParams.RemoteParamsBuilder.create()
                 .add("value", value)
                 .build();
@@ -177,7 +202,7 @@ public class AgentMobile extends AbstractAgent {
             }
         } catch (Exception siriusConnectionClosed) {
             siriusConnectionClosed.printStackTrace();
-        }
+        }*/
         return null;
     }
 

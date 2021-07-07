@@ -13,8 +13,8 @@ import java.util.List;
 public class MobilePairwiseProxy extends AbstractPairwise  {
     BaseAgentConnection rpc;
 
-    public MobilePairwiseProxy(BaseAgentConnection rpc) {
-        this.rpc = rpc;
+    public MobilePairwiseProxy() {
+
     }
 
 

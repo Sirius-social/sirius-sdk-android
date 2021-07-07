@@ -39,11 +39,11 @@
 
         <com.sirius.sample.view.SiriusScannerView
             android:id="@+id/mScannerView"
-            android:layout_width="300dp"
+            android:layout_width="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/logo"
             android:layout_marginTop="16dp"
-            android:layout_height="300dp"
+            android:layout_height="350dp"
            />
 
 
