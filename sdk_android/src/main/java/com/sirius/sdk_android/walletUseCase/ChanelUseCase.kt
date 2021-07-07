@@ -9,7 +9,7 @@ import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.state_mac
 import com.sirius.sdk.agent.listener.Event
 import com.sirius.sdk.agent.listener.Listener
 import com.sirius.sdk.agent.pairwise.Pairwise.Me
-import com.sirius.sdk_android.hub.ContextMobile
+import com.sirius.sdk.hub.MobileContext
 import org.hyperledger.indy.sdk.crypto.Crypto
 import java.util.*
 
@@ -39,31 +39,18 @@ class ChanelUseCase {
         }).start()
     }
 
-    lateinit var context: ContextMobile
+    lateinit var context: MobileContext
      var listener: Listener? = null
 
 
     fun parseMessage(message: String) {
         Thread(Runnable {
             try {
-                val byteMess =
-                    Crypto.unpackMessage(WalletUseCase.getInstance().myWallet, message.toByteArray(charset("UTF-8")))
-                        .get()
-                val unpackedMess = String(byteMess)
-                Log.d("mylog900", "unpackedMess=$unpackedMess")
-                /*val event = listener?.one?.get()
-                if(event!=null){
-                    parseMessageByScenario(event)
-                }*/
-              //  Log.d("mylog2090", "event=" + event);
-            } catch (e: Exception) {
+                context.currentHub.agent.receiveMsg( message.toByteArray(charset("UTF-8")))
+            }catch (e : java.lang.Exception){
                 e.printStackTrace()
             }
         }).start()
-        context.currentHub.agent.sendMessageToEvents(message)
-     /*   Handler(Looper.getMainLooper()).postDelayed(Runnable {
-
-        },300)*/
     }
 
     private fun parseMessageByScenario(event: Event) {

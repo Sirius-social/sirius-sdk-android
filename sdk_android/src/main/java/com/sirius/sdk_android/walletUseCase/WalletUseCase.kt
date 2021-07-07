@@ -3,8 +3,9 @@ package com.sirius.sdk_android.walletUseCase
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.sirius.sdk.hub.Context
+import com.sirius.sdk.hub.MobileContext
 import com.sirius.sdk_android.IndyWallet
-import com.sirius.sdk_android.hub.ContextMobile
 import com.sirius.sdk_android.models.KeyDidRecord
 import com.sirius.sdk_android.models.WalletRecordSearch
 import com.sirius.sdk_android.utils.FileUtils
@@ -42,7 +43,7 @@ class WalletUseCase constructor(
     val OPEN_WALLET_REQUEST_CODE = 1007
     val SCAN_INVITATION_WALLET_REQUEST_CODE = 1009
     var myWallet: Wallet? = null
-    lateinit var context: ContextMobile
+    lateinit var context: MobileContext
     private var dirPath: String = "wallet"
     private var exportdirPath: String = "export"
     private var genesisPath: String = "genesis"
@@ -134,6 +135,28 @@ class WalletUseCase constructor(
     }
 
 
+
+    fun createWalletConfig(alias : String,projDir:String) : String{
+        val path =   "{\"path\":\"$projDir\"}"
+        return "{\"id\":\"$alias\" , \"storage_config\":$path}"
+    }
+
+    fun createWalletCredential(pass:String) : String{
+        return   "{\"key\":\"$pass\"}"
+    }
+
+    fun createWalletConfigCredential(userJid: String?, pin: String?) : Pair<String,String>{
+        val alias = HashUtils.generateHash(userJid)
+        val projDir = File(dirPath)
+        if (!projDir.exists()) {
+            projDir.mkdirs()
+        }
+        val path = "{\"path\":\"$projDir\"}"
+        val pass = HashUtils.generateHashWithoutStoredSalt(pin, alias)
+        val myWalletConfig = "{\"id\":\"$alias\" , \"storage_config\":$path}"
+        val myWalletCredentials = "{\"key\":\"$pass\"}"
+        return Pair(myWalletConfig,myWalletCredentials)
+    }
     fun openWallet(userJid: String?, pin: String?): Wallet? {
 
         //TODO REFACTOR WITH LAYERS

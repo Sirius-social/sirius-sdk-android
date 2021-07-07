@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.sirius.sample.fragments.MenuFragment
 import com.sirius.sample.service.WebSocketService
 import com.sirius.sdk_android.SiriusSDK
+import com.sirius.sdk_android.utils.HashUtils
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,12 +49,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun openWallet(){
-         SiriusSDK.getInstance().walletUseCase.ensureWalletOpen("123", "123")
+         //SiriusSDK.getInstance().walletUseCase.ensureWalletOpen("123", "123")
     }
     fun initSdk() {
-        val dirPath= App.getContext().filesDir.absolutePath
+        val userJid = "igor";
+        val pass = "1234";
+        val mainDirPath= App.getContext().filesDir.absolutePath
+        val walletDirPath = mainDirPath + File.separator + "wallet"
+        val alias = HashUtils.generateHash(userJid)
+        val passForWallet = HashUtils.generateHashWithoutStoredSalt(pass, alias)
+        val projDir = File(walletDirPath)
+        if (!projDir.exists()) {
+            projDir.mkdirs()
+        }
+        val walletId = alias.substring(IntRange(0, 8))
+
         SiriusSDK.getInstance().
         initialize("https://socialsirius.com/endpoint/48fa9281-d6b1-4b17-901d-7db9e64b70b1/",
-            "https://socialsirius.com",dirPath)
+            "https://socialsirius.com",walletId,passForWallet,mainDirPath)
     }
 }

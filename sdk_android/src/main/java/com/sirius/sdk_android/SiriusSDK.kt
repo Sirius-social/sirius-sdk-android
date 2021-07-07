@@ -1,10 +1,13 @@
 package com.sirius.sdk_android
 
 
-import com.sirius.sdk_android.hub.ContextMobile
+import com.sirius.sdk.hub.Context
+import com.sirius.sdk.hub.MobileContext
+import com.sirius.sdk.hub.MobileHub
 import com.sirius.sdk_android.walletUseCase.ChanelUseCase
 import com.sirius.sdk_android.walletUseCase.InvitationUseCase
 import com.sirius.sdk_android.walletUseCase.WalletUseCase
+import shadow.org.json.JSONObject
 
 
 class SiriusSDK {
@@ -28,18 +31,22 @@ class SiriusSDK {
 
 
 
-    private lateinit var context: ContextMobile
+    private lateinit var context: MobileContext
 
-    fun createContext(indyEndpoint: String, serverUri: String) {
-        context =
-            ContextMobile.builderMobile().setEndpoint(indyEndpoint).setServerUri(serverUri).build()
+    fun createContext(indyEndpoint: String, serverUri: String,config : String, credential: String ) {
+        context =  MobileContext.builder().
+        setIndyEndpoint(indyEndpoint).setServerUri(serverUri).
+        setWalletConfig(JSONObject(config)).
+        setWalletCredentials(JSONObject(credential)).build() as MobileContext
     }
 
-    fun initialize(indyEndpoint: String, myHost: String, mainDirPath: String) {
-        createContext(indyEndpoint, myHost)
+    fun initialize(indyEndpoint: String, myHost: String, alias : String, pass :  String, mainDirPath: String ) {
+        val config  =  WalletUseCase.getInstance().createWalletConfig(alias,mainDirPath)
+        val credential = WalletUseCase.getInstance().createWalletCredential(pass)
+        createContext(indyEndpoint, myHost,config,credential)
         walletUseCase.context = context
         walletUseCase.setDirsPath(mainDirPath)
-        invitationUseCase.context = context
+        invitationUseCase.context =  context
         chanelUseCase.context = context
         chanelUseCase.initListener()
     }
