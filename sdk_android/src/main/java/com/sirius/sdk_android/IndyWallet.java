@@ -8,7 +8,6 @@
  import com.sirius.sdk_android.models.KeyDidRecord;
  import com.sirius.sdk_android.utils.FileUtils;
  import com.sirius.sdk_android.utils.HashUtils;
- import com.sirius.sdk_android.walletUseCase.WalletUseCase;
 
  import org.hyperledger.indy.sdk.IndyException;
  import org.hyperledger.indy.sdk.did.Did;
@@ -20,7 +19,6 @@
  import java.io.File;
  import java.security.NoSuchAlgorithmException;
  import java.security.spec.InvalidKeySpecException;
- import java.util.UUID;
  import java.util.concurrent.ExecutionException;
 
 

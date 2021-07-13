@@ -56,9 +56,10 @@ public class ChannelMessageWrapper {
         if (WIRED_CONTENT_TYPE.equals(contentType)) {
             try {
                 JSONObject jsonObject = new JSONObject(messageString);
-                JSONObject wiredData = jsonObject.getJSONObject("wired_data");
-                return wiredData.toString();
-
+                if(jsonObject.has("wired_data")){
+                   return jsonObject.getJSONObject("wired_data").toString();
+                }
+                return jsonObject.toString();
             } catch (JSONException e) {
                 e.printStackTrace();
             }

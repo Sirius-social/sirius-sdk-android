@@ -38,7 +38,7 @@ class ShowQrFragment : Fragment() {
             parentFragmentManager?.beginTransaction().addToBackStack("1").replace(R.id.mainFrame, ScanQrFragment()).commit()
         }
 
-        val invitation = SiriusSDK.getInstance().invitationUseCase.generateInvitation("Sirius Sample SDK")
+        val invitation = SiriusSDK.getInstance().invitationHelper.generateInvitation()
         updateQrCode(invitation)
         return view
     }

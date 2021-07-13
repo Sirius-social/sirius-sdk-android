@@ -5,8 +5,11 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sirius.sample.fragments.MenuFragment
 import com.sirius.sample.service.WebSocketService
+import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.ConnRequest
+import com.sirius.sdk.agent.listener.Event
 import com.sirius.sdk_android.SiriusSDK
 import com.sirius.sdk_android.utils.HashUtils
+import com.sirius.sdk_android.walletUseCase.ChanelHelper
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -17,7 +20,19 @@ class MainActivity : AppCompatActivity() {
         initSdk()
         openWallet()
         startSocketService()
+        showLoading()
         supportFragmentManager.beginTransaction().replace(R.id.mainFrame, MenuFragment()).commit()
+    }
+
+    private fun showLoading(){
+        /*SiriusSDK.getInstance().channelHelper.addListener(object : ChanelHelper.EventListener{
+            override fun onEvent(event: Event) {
+               if(event.message() is ConnRequest){
+
+               }
+            }
+
+        })*/
     }
 
     private fun startSocketService() {
@@ -45,11 +60,11 @@ class MainActivity : AppCompatActivity() {
 
 
     fun closeWallet(){
-        SiriusSDK.getInstance().walletUseCase.closeWallet()
+        SiriusSDK.getInstance().walletHelper.closeWallet()
     }
 
     fun openWallet(){
-         //SiriusSDK.getInstance().walletUseCase.ensureWalletOpen("123", "123")
+       //  SiriusSDK.getInstance().walletUseCase.ensureWalletOpen("123", "123")
     }
     fun initSdk() {
         val userJid = "igor";
@@ -65,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         val walletId = alias.substring(IntRange(0, 8))
 
         SiriusSDK.getInstance().
-        initialize("https://socialsirius.com/endpoint/48fa9281-d6b1-4b17-901d-7db9e64b70b1/",
-            "https://socialsirius.com",walletId,passForWallet,mainDirPath)
+        initialize(this, "https://socialsirius.com/endpoint/48fa9281-d6b1-4b17-901d-7db9e64b70b1/",
+            "https://socialsirius.com",walletId,passForWallet,mainDirPath,"Sirius Sample SDK")
     }
 }

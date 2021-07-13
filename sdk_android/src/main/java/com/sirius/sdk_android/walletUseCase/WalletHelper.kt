@@ -3,7 +3,6 @@ package com.sirius.sdk_android.walletUseCase
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.sirius.sdk.hub.Context
 import com.sirius.sdk.hub.MobileContext
 import com.sirius.sdk_android.IndyWallet
 import com.sirius.sdk_android.models.KeyDidRecord
@@ -23,19 +22,19 @@ import java.util.*
 import java.util.concurrent.ExecutionException
 
 
-class WalletUseCase constructor(
+class WalletHelper constructor(
 
 ) {
 
     companion object {
-        private var instanceWalletUseCase: WalletUseCase? = null
+        private var instanceWalletHelper: WalletHelper? = null
 
         @JvmStatic
-        fun getInstance(): WalletUseCase {
-            if (instanceWalletUseCase == null) {
-                instanceWalletUseCase = WalletUseCase()
+        fun getInstance(): WalletHelper {
+            if (instanceWalletHelper == null) {
+                instanceWalletHelper = WalletHelper()
             }
-            return instanceWalletUseCase!!
+            return instanceWalletHelper!!
         }
     }
 
@@ -145,7 +144,7 @@ class WalletUseCase constructor(
         return   "{\"key\":\"$pass\"}"
     }
 
-    fun createWalletConfigCredential(userJid: String?, pin: String?) : Pair<String,String>{
+   /* fun createWalletConfigCredential(userJid: String?, pin: String?) : Pair<String,String>{
         val alias = HashUtils.generateHash(userJid)
         val projDir = File(dirPath)
         if (!projDir.exists()) {
@@ -156,8 +155,8 @@ class WalletUseCase constructor(
         val myWalletConfig = "{\"id\":\"$alias\" , \"storage_config\":$path}"
         val myWalletCredentials = "{\"key\":\"$pass\"}"
         return Pair(myWalletConfig,myWalletCredentials)
-    }
-    fun openWallet(userJid: String?, pin: String?): Wallet? {
+    }*/
+  /*  fun openWallet(userJid: String?, pin: String?): Wallet? {
 
         //TODO REFACTOR WITH LAYERS
         val alias = HashUtils.generateHash(userJid)
@@ -171,9 +170,9 @@ class WalletUseCase constructor(
         val myWalletCredentials = "{\"key\":\"$pass\"}"
         myWallet = Wallet.openWallet(myWalletConfig, myWalletCredentials).get()
         return myWallet
-    }
+    }*/
 
-    fun createWallet(userJid: String?, pin: String?): Boolean {
+    /*fun createWallet(userJid: String?, pin: String?): Boolean {
         try {
             val alias = HashUtils.generateHash(userJid)
             val pass = HashUtils.generateHashWithoutStoredSalt(pin, alias)
@@ -193,7 +192,7 @@ class WalletUseCase constructor(
 
         return false
     }
-
+*/
 
     fun isWalletExist(jid: String): Boolean {
         val exist = false
@@ -432,7 +431,7 @@ class WalletUseCase constructor(
         return myWallet != null
     }
 
-    fun ensureWalletOpen(userJid: String, pin: String): Wallet? {
+  /*  fun ensureWalletOpen(userJid: String, pin: String): Wallet? {
         return if (isWalletExist(userJid)) {
             if(isWalletOpened()){
                 return myWallet
@@ -442,15 +441,22 @@ class WalletUseCase constructor(
             createWallet(userJid, pin)
             openWallet(userJid, pin)
         }
-    }
+    }*/
 
+    fun create(){
+
+    }
+    fun open(){
+        context.currentHub.agent.open()
+    }
     fun closeWallet() {
-        try {
+        context.close()
+       /* try {
             myWallet?.closeWallet()
             myWallet = null
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
-        }
+        }*/
     }
 
 

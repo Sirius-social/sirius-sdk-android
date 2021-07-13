@@ -2,22 +2,26 @@ package com.sirius.sdk_android.walletUseCase
 
 import android.util.Base64
 import android.util.Log
+import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.ConnRequest
 import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation
-import com.sirius.sdk.hub.Context
+import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.state_machines.Invitee
+import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.state_machines.Inviter
+import com.sirius.sdk.agent.pairwise.Pairwise
 import com.sirius.sdk.hub.MobileContext
 import com.sirius.sdk.messaging.Message
+import com.sirius.sdk_android.SiriusSDK
 
-class InvitationUseCase {
+class InvitationHelper {
 
     companion object {
-        private var invitationUseCase: InvitationUseCase? = null
+        private var invitationHelper: InvitationHelper? = null
 
         @JvmStatic
-        fun getInstance(): InvitationUseCase {
-            if (invitationUseCase == null) {
-                invitationUseCase = InvitationUseCase()
+        fun getInstance(): InvitationHelper {
+            if (invitationHelper == null) {
+                invitationHelper = InvitationHelper()
             }
-            return invitationUseCase!!
+            return invitationHelper!!
         }
     }
 
@@ -57,8 +61,28 @@ class InvitationUseCase {
 
 
 
-    fun startConnectionWithInvitation(message: String) {
-        Log.d("mylog500", "startConnectionWithInvitation=$message")
+    fun startInvitee(invitation: Invitation) {
+        val didVerkey = context.did.createAndStoreMyDid()
+        var myDid =  didVerkey.first
+        var myConnectionKey =  didVerkey.second
+        val me = Pairwise.Me(myDid, myConnectionKey)
+        val machine = Invitee(context, me, context.endpoints.get(0))
+        val pairwise : Pairwise?= machine.createConnection(invitation, SiriusSDK.getInstance().label)
+        pairwise?.let {
+            context.pairwiseList.ensureExists(it)
+        }
+    }
+
+    fun startInviter(request: ConnRequest){
+        val didVerkey = context.did.createAndStoreMyDid()
+        var did = didVerkey.first
+        var verkey = didVerkey.second
+        val inviterMe = Pairwise.Me(did, verkey)
+        val machine = Inviter(context, inviterMe, verkey, context.endpoints.get(0))
+        val pairwise : Pairwise? = machine.createConnection(request)
+        pairwise?.let {
+            context.pairwiseList.ensureExists(it)
+        }
     }
 
     fun validateInvitationUrl(url: String): Boolean {
@@ -75,18 +99,11 @@ class InvitationUseCase {
         return false
     }
 
-    var myConnectionKey : String? = null
-    var myDid : String? = null
-    fun generateInvitation(label: String): String {
-        // Ключ установки соединения. Аналог Bob Pre-key
-        //см. [2.4. Keys] https://signal.org/docs/specifications/x3dh/
-       // System.out.println("mylog299 generateQrCodeInvitation context crypto=" + WalletUseCase.getInstance().context.crypto)
-        val connectionKey =context.crypto.createKey()
-        this.myConnectionKey = connectionKey
-      //  this.myDid =  WalletUseCase.getInstance().DIDForKey(connectionKey)
-        // val sm = Inviter(context, Pairwise.Me("myDid", "myVerkey"), connectionKey, myEndpoint)
-        // Теперь сформируем приглашение для других через 0160
-        // шаг 1 - определимся какой endpoint мы возьмем, для простоты возьмем endpoint без доп шифрования
+
+
+    fun generateInvitation(): String {
+        val verkey = context.crypto.createKey()
+       // myDid =  didVerkey.first
         val endpoints = context.endpoints
         var myEndpoint: com.sirius.sdk.agent.connections.Endpoint? = null
         for (e in endpoints) {
@@ -97,18 +114,9 @@ class InvitationUseCase {
         }
         System.out.println("mylog299 myEndpoint=" + myEndpoint)
         if (myEndpoint == null) return ""
-        // шаг 2 - создаем приглашение
         val invitation = Invitation.builder()
-            .setLabel(label)
-            .setRecipientKeys(listOf(connectionKey)).setEndpoint(myEndpoint.address).build()
-
-        // шаг 2 - создаем приглашение
-
-        // шаг 3 - согласно Aries-0160 генерируем URL
-
-        // Establish connection with Sirius Communicator via standard Aries protocol
-        // https://github.com/hyperledger/aries-rfcs/blob/master/features/0160-connection-protocol/README.md#states
-
+            .setLabel(SiriusSDK.getInstance().label)
+            .setRecipientKeys(listOf( verkey)).setEndpoint(myEndpoint.address).build()
         System.out.println("mylog299 invitation=" + invitation)
         System.out.println("mylog299 invitation=" + invitation.messageObj)
         System.out.println("mylog299 invitation=" + invitation.endpoint())

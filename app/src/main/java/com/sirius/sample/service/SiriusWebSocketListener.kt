@@ -154,7 +154,7 @@ class SiriusWebSocketListener() : WebSocketListener {
         Log.d("mylog2090","messageWrapper?.contentType="+messageWrapper?.contentType);
         if(messageWrapper?.topic == "indy.transport"){
             Log.d("mylog2090","messageWrapper?.messageString="+messageWrapper?.messageString);
-            SiriusSDK.getInstance().chanelUseCase.parseMessage(messageWrapper?.messageFromMessageString ?: "")
+            SiriusSDK.getInstance().channelHelper.parseMessage(messageWrapper?.messageFromMessageString ?: "")
         }
     }
 

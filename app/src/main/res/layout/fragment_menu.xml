@@ -27,15 +27,29 @@
             android:layout_below="@+id/logo"
              />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo_text"
+        android:padding="24dp"
+        android:id="@+id/pairwisesBtn"
+        android:layout_marginTop="32dp"
+        android:textSize="20sp"
+        android:background="@drawable/btn_blue_frame_round"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/purple_700"
+        android:text="PAIRWISES"
+        />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/logo_text"
-            android:layout_marginTop="40dp"
+            android:layout_below="@+id/pairwisesBtn"
+            android:layout_marginTop="16dp"
             android:id="@+id/connectBtn"
             android:src="@drawable/btn_connect" />
+
 
 
 
