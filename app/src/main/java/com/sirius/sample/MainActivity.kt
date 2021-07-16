@@ -4,12 +4,16 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sirius.sample.fragments.MenuFragment
+import com.sirius.sample.fragments.PairwisesFragment
+import com.sirius.sample.fragments.ValidatingFragment
 import com.sirius.sample.service.WebSocketService
 import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.ConnRequest
 import com.sirius.sdk.agent.listener.Event
+import com.sirius.sdk.agent.pairwise.Pairwise
 import com.sirius.sdk_android.SiriusSDK
 import com.sirius.sdk_android.utils.HashUtils
 import com.sirius.sdk_android.walletUseCase.ChanelHelper
+import com.sirius.sdk_android.walletUseCase.InvitationHelper
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -25,14 +29,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showLoading(){
-        /*SiriusSDK.getInstance().channelHelper.addListener(object : ChanelHelper.EventListener{
-            override fun onEvent(event: Event) {
-               if(event.message() is ConnRequest){
-
-               }
+        SiriusSDK.getInstance().invitationHelper.invitationListener = object : InvitationHelper.InvitationListener{
+            override fun onInvitationStart() {
+                supportFragmentManager.beginTransaction().replace(R.id.mainFrame, ValidatingFragment()).commit()
             }
 
-        })*/
+            override fun onInvitationEnd(pairwise: Pairwise?) {
+                if(pairwise == null){
+                    supportFragmentManager.beginTransaction().replace(R.id.mainFrame, MenuFragment()).commit()
+                }else{
+                    supportFragmentManager.beginTransaction().replace(R.id.mainFrame, PairwisesFragment()).commit()
+                }
+            }
+
+        }
     }
 
     private fun startSocketService() {

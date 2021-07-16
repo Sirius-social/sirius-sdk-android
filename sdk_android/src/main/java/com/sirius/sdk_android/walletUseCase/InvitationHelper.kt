@@ -27,6 +27,13 @@ class InvitationHelper {
 
     lateinit var context: MobileContext
 
+    interface InvitationListener : ChanelHelper.EventListener{
+        fun onInvitationStart()
+        fun onInvitationEnd(pairwise: Pairwise?)
+    }
+
+    var invitationListener : InvitationListener?=null
+
 
     fun parseInvitationLink(rawValue: String?): String? {
         var parsedString = ""
@@ -62,6 +69,7 @@ class InvitationHelper {
 
 
     fun startInvitee(invitation: Invitation) {
+        invitationListener?.onInvitationStart()
         val didVerkey = context.did.createAndStoreMyDid()
         var myDid =  didVerkey.first
         var myConnectionKey =  didVerkey.second
@@ -71,18 +79,21 @@ class InvitationHelper {
         pairwise?.let {
             context.pairwiseList.ensureExists(it)
         }
+        invitationListener?.onInvitationEnd(pairwise)
     }
 
-    fun startInviter(request: ConnRequest){
+    fun startInviter(request: ConnRequest, connectionKey : String){
+        invitationListener?.onInvitationStart()
         val didVerkey = context.did.createAndStoreMyDid()
         var did = didVerkey.first
         var verkey = didVerkey.second
         val inviterMe = Pairwise.Me(did, verkey)
-        val machine = Inviter(context, inviterMe, verkey, context.endpoints.get(0))
+        val machine = Inviter(context, inviterMe, connectionKey, context.endpoints.get(0))
         val pairwise : Pairwise? = machine.createConnection(request)
         pairwise?.let {
             context.pairwiseList.ensureExists(it)
         }
+        invitationListener?.onInvitationEnd(pairwise)
     }
 
     fun validateInvitationUrl(url: String): Boolean {
@@ -100,10 +111,10 @@ class InvitationHelper {
     }
 
 
-
+    var invitationVerKey :String? =null
     fun generateInvitation(): String {
         val verkey = context.crypto.createKey()
-       // myDid =  didVerkey.first
+        invitationVerKey =  verkey
         val endpoints = context.endpoints
         var myEndpoint: com.sirius.sdk.agent.connections.Endpoint? = null
         for (e in endpoints) {

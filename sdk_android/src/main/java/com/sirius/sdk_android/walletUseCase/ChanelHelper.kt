@@ -84,10 +84,10 @@ class ChanelHelper {
                 context.currentHub.agent.receiveMsg( message.toByteArray(charset("UTF-8")))
               //  mobileAgent.receiveMsg(bytesMsg)
                 val event = cf[60, TimeUnit.SECONDS]
-                Log.d("mylog2090","event.message " + event?.message())
-                Log.d("mylog2090","event.recipientVerkey " + event?.recipientVerkey)
-                Log.d("mylog2090","event.senderVerkey " + event?.senderVerkey)
-                Log.d("mylog2090","event.pairwise " + event?.pairwise)
+             //   Log.d("mylog2090","event.message " + event?.message())
+           //     Log.d("mylog2090","event.recipientVerkey " + event?.recipientVerkey)
+           //     Log.d("mylog2090","event.senderVerkey " + event?.senderVerkey)
+          //      Log.d("mylog2090","event.pairwise " + event?.pairwise)
                 parseMessageByScenario(event)
 
             }catch (e : java.lang.Exception){
@@ -113,8 +113,9 @@ class ChanelHelper {
 
 
     fun parseConnectionRequest(event: Event) {
-        Log.d("mylog2090","event.ConnRequest " + event?.messageObj)
+
         val request = event.message() as ConnRequest
-        InvitationHelper.getInstance().startInviter(request)
+        InvitationHelper.getInstance().startInviter(request,
+            InvitationHelper.getInstance().invitationVerKey?:"")
     }
 }

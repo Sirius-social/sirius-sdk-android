@@ -32,6 +32,8 @@ class PairwisesListAdapter() :
         /*fun bind(item: ItemCredentials) {
             binding?.model = item
         }*/
+
+
     }
 
     override fun getLayoutRes(): Int {
