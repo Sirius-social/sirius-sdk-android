@@ -13,6 +13,8 @@ import com.sirius.sample.PermissionHelper
 import com.sirius.sample.R
 import com.sirius.sample.view.SiriusScannerView
 import com.sirius.sdk_android.SiriusSDK
+import com.sirius.sdk_android.helpers.ChanelHelper
+import com.sirius.sdk_android.helpers.InvitationHelper
 
 
 class ScanQrFragment : Fragment(), SiriusScannerView.ResultHandler {
@@ -60,9 +62,9 @@ class ScanQrFragment : Fragment(), SiriusScannerView.ResultHandler {
 
 
     fun onCodeScanned(result: String) : Boolean{
-        val message = SiriusSDK.getInstance().invitationHelper.parseInvitationLink(result)
+        val message = InvitationHelper.getInstance().parseInvitationLink(result)
         if (message != null) {
-            SiriusSDK.getInstance().channelHelper.parseMessage(message)
+            ChanelHelper.getInstance().parseMessage(message)
             return true
         } else {
             val textError: String ="The scanned QR code is not an invitation, please scan another QR code."

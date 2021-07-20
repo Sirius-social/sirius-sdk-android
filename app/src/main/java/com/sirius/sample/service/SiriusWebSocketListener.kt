@@ -6,6 +6,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.neovisionaries.ws.client.*
 import com.sirius.sdk_android.SiriusSDK
+import com.sirius.sdk_android.helpers.ChanelHelper
 
 
 class SiriusWebSocketListener() : WebSocketListener {
@@ -154,7 +155,7 @@ class SiriusWebSocketListener() : WebSocketListener {
         Log.d("mylog2090","messageWrapper?.contentType="+messageWrapper?.contentType);
         if(messageWrapper?.topic == "indy.transport"){
             Log.d("mylog2090","messageWrapper?.messageString="+messageWrapper?.messageString);
-            SiriusSDK.getInstance().channelHelper.parseMessage(messageWrapper?.messageFromMessageString ?: "")
+            ChanelHelper.getInstance().parseMessage(messageWrapper?.messageFromMessageString ?: "")
         }
     }
 

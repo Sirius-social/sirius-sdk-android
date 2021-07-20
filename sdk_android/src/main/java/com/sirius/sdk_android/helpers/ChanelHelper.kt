@@ -1,0 +1,66 @@
+package com.sirius.sdk_android.helpers
+
+
+import android.util.Log
+import com.sirius.sdk.agent.listener.Event
+import com.sirius.sdk.agent.listener.Listener
+import com.sirius.sdk.hub.MobileContext
+import com.sirius.sdk_android.SiriusSDK
+import java.util.concurrent.TimeUnit
+
+/**
+ * This is the helper class to show how the SDK workflow is done. Parse message from different channels (Websocket, FCM etc..)
+ * and loop through scenario
+ */
+class ChanelHelper {
+
+
+    companion object {
+        private var chanelHelper: ChanelHelper? = null
+
+        @JvmStatic
+        fun getInstance(): ChanelHelper {
+            if (chanelHelper == null) {
+                chanelHelper = ChanelHelper()
+            }
+            return chanelHelper!!
+        }
+    }
+
+    fun initListener() {
+        Thread(Runnable {
+            try {
+                listener = SiriusSDK.getInstance().context.subscribe()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }).start()
+    }
+
+     var listener: Listener? = null
+
+
+    fun parseMessage(message: String) {
+        Thread(Runnable {
+            try {
+                val cf = listener!!.one
+                SiriusSDK.getInstance().context.currentHub.agent.receiveMsg( message.toByteArray(charset("UTF-8")))
+                val event = cf[60, TimeUnit.SECONDS]
+                val message = event.message()
+               val type =  message.type
+                parseMessageByScenario(event)
+            }catch (e : java.lang.Exception){
+                e.printStackTrace()
+            }
+        }).start()
+
+    }
+
+    private fun parseMessageByScenario(event: Event) {
+        ScenarioHelper.getInstance().scenarioMap.forEach {
+            it.value.startScenario(event)
+        }
+        Log.d("mylog2090","event.message type" + event.message())
+    }
+
+}

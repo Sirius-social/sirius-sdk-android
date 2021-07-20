@@ -1,4 +1,4 @@
-package com.sirius.sdk_android.walletUseCase
+package com.sirius.sdk_android.helpers
 
 
 import com.google.gson.Gson
@@ -21,7 +21,9 @@ import java.security.spec.InvalidKeySpecException
 import java.util.*
 import java.util.concurrent.ExecutionException
 
-
+/**
+ * Important helper class to work with wallet inside SDK
+ */
 class WalletHelper constructor(
 
 ) {

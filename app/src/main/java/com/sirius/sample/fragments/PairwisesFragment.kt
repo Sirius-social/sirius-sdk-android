@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.sirius.sample.R
 import com.sirius.sdk_android.SiriusSDK
+import com.sirius.sdk_android.helpers.PairwiseHelper
 
 class PairwisesFragment : Fragment() {
 
@@ -22,7 +23,7 @@ class PairwisesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_pairwises, container,false)
         list  = view.findViewById(R.id.contactsRecyclerView)
         adapter.setOnAdapterItemClick {
-            SiriusSDK.getInstance().pairwiseHelper.sendMessageTo("TEST 0095",it)
+            PairwiseHelper.getInstance().sendMessageTo("TEST 0095",it)
         }
         list!!.adapter = adapter
         updateAdapter()
@@ -31,7 +32,7 @@ class PairwisesFragment : Fragment() {
 
 
     fun updateAdapter(){
-        val list = SiriusSDK.getInstance().pairwiseHelper.getAllPairwise()
+        val list = PairwiseHelper.getInstance().getAllPairwise()
         adapter.setDataList(list)
         adapter.notifyDataSetChanged()
     }

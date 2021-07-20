@@ -7,10 +7,10 @@ import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.
 import com.sirius.sdk.hub.MobileContext
 import com.sirius.sdk.messaging.Message
 import com.sirius.sdk_android.utils.ClassScanner
-import com.sirius.sdk_android.walletUseCase.ChanelHelper
-import com.sirius.sdk_android.walletUseCase.InvitationHelper
-import com.sirius.sdk_android.walletUseCase.PairwiseHelper
-import com.sirius.sdk_android.walletUseCase.WalletHelper
+import com.sirius.sdk_android.helpers.ChanelHelper
+import com.sirius.sdk_android.helpers.InvitationHelper
+import com.sirius.sdk_android.helpers.PairwiseHelper
+import com.sirius.sdk_android.helpers.WalletHelper
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -36,9 +36,6 @@ class SiriusSDK {
 
 
     val walletHelper = WalletHelper.getInstance();
-    val channelHelper = ChanelHelper.getInstance();
-    val invitationHelper = InvitationHelper.getInstance()
-    val pairwiseHelper = PairwiseHelper.getInstance()
     var label : String? =null
 
     lateinit var context: MobileContext
@@ -121,20 +118,6 @@ class SiriusSDK {
         createContext(indyEndpoint, myHost, config, credential)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
-        invitationHelper.context = context
-        channelHelper.context = context
-        pairwiseHelper.context = context
-        channelHelper.initListener()
     }
 
-
-    fun proposeTest() {
-
-        examples.propose_credential.Main.main(arrayOf(""))
-    }
-
-    fun QrTest() {
-
-        examples.Main.main(null)
-    }
 }

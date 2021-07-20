@@ -16,6 +16,8 @@ import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
 import com.sirius.sample.R
 import com.sirius.sdk_android.SiriusSDK
+import com.sirius.sdk_android.helpers.ScenarioHelper
+import com.sirius.sdk_android.scenario.impl.InviterScenario
 import java.util.*
 
 
@@ -37,9 +39,11 @@ class ShowQrFragment : Fragment() {
         openCameraBtn.setOnClickListener {
             parentFragmentManager?.beginTransaction().addToBackStack("1").replace(R.id.mainFrame, ScanQrFragment()).commit()
         }
-
-        val invitation = SiriusSDK.getInstance().invitationHelper.generateInvitation()
-        updateQrCode(invitation)
+        val inviterScenario =  ScenarioHelper.getInstance().getScenarioBy("Inviter") as? InviterScenario
+        val invitation = inviterScenario?.generateInvitation()
+        invitation?.let {
+            updateQrCode(it)
+        }
         return view
     }
 

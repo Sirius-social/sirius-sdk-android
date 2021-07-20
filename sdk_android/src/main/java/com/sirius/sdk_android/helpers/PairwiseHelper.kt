@@ -1,10 +1,11 @@
-package com.sirius.sdk_android.walletUseCase
+package com.sirius.sdk_android.helpers
 
 
 import com.sirius.sdk.agent.pairwise.Pairwise
 
 import com.sirius.sdk.agent.pairwise.WalletPairwiseList
 import com.sirius.sdk.hub.MobileContext
+import com.sirius.sdk_android.SiriusSDK
 
 import shadow.org.json.JSONObject
 
@@ -23,12 +24,11 @@ class PairwiseHelper {
         }
     }
 
-    lateinit var context: MobileContext
 
 
     fun getAllPairwise(): List<Pairwise> {
         val list =
-            (context.currentHub.agent.wallet.pairwise.listPairwise() as? List<String>).orEmpty()
+            (SiriusSDK.getInstance().context.currentHub.agent.wallet.pairwise.listPairwise() as? List<String>).orEmpty()
         val mutableList: MutableList<Pairwise> = mutableListOf()
         list.forEach {
             val pairwiseObj = JSONObject(it)
@@ -45,10 +45,10 @@ class PairwiseHelper {
 
     fun getPairwise(theirDid: String? = null, theirVerkey: String? = null): Pairwise? {
         if (theirDid != null) {
-            return context.currentHub.pairwiseList.loadForDid(theirDid)
+            return SiriusSDK.getInstance().context.currentHub.pairwiseList.loadForDid(theirDid)
         }
         if (theirVerkey != null) {
-            return context.currentHub.pairwiseList.loadForVerkey(theirVerkey)
+            return SiriusSDK.getInstance().context.currentHub.pairwiseList.loadForVerkey(theirVerkey)
         }
         return null;
     }
@@ -58,6 +58,6 @@ class PairwiseHelper {
     fun sendMessageTo(message: String, pairwise: Pairwise) {
         val mess = com.sirius.sdk.agent.aries_rfc.feature_0095_basic_message.Message.builder()
             .setContent(message).setLocale("ru").build()
-        context.sendTo(mess, pairwise)
+        SiriusSDK.getInstance().context.sendTo(mess, pairwise)
     }
 }
