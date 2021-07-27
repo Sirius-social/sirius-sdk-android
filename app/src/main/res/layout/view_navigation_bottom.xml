@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/viewBack"
+        android:background="@drawable/back_bottom_tab"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/requestsBtn"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/requestsBtnImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/chatBtn"
+                android:layout_weight="1"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/menu_contacts"
+                android:visibility="visible" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/requestsBtnText"
+
+                android:gravity="center"
+                android:textAllCaps="true"
+                style="@style/FontRegular"
+                android:textSize="10sp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_gravity="center"
+                android:textColor="@color/blue"
+                android:text="@string/menu_contacts"/>
+        </LinearLayout>
+
+
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/notificationsBtn"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/notificationsBtnImage"
+                    android:layout_width="38dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/menu_menu" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/notificationsBtnText"
+                    android:textSize="12sp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    />
+            </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+
+
+            android:id="@+id/cabinetBtn"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/cabinetBtnImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/menu_credential"
+                android:visibility="visible" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cabinetBtnText"
+
+                android:gravity="center"
+                android:textAllCaps="true"
+                style="@style/FontRegular"
+                android:textSize="10sp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="center"
+                android:textColor="@color/blue"
+                android:text="@string/menu_credentials"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_weight="1"
+            android:id="@+id/actionsBtn"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+            <ImageView
+                android:id="@+id/actionsBtnImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/menu_action"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

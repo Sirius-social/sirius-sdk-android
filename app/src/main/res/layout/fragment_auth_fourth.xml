@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.sirius.sample.ui.auth.auth_fourth.AuthFourthViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:padding="12dp"
+            android:src="@drawable/logo_sirius"  />
+
+        <TextView
+            android:id="@+id/firstHint"
+            style="@style/Regular19"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/auth_fourth_hint"
+            android:textAllCaps="true"
+            android:textColor="@color/black" />
+
+        <com.sirius.sample.design.IndicatorView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/indicatorView"
+            android:layout_gravity="center" />
+
+
+        <LinearLayout
+            android:id="@+id/nextLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:onClick="@{viewModel::onRegisterClick}"
+            android:visibility="@{viewModel.nextVisibilityLiveData}"
+            android:padding="16dp">
+
+            <TextView
+                style="@style/Regular19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/auth_next"
+                android:textAllCaps="true"
+                android:textColor="@color/black" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="16dp"
+                app:tint="@color/defaultColor"
+                android:src="@drawable/btn_next" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Regular19"
+                android:layout_width="150dp"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:text="@string/auth_fourth_hint_pin"
+                android:textAllCaps="true"
+                android:textColor="@color/black" />
+
+
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:lines="1"
+                android:singleLine="true"
+                android:id="@+id/phoneEditText"
+                android:backgroundTint="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Regular19"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="@string/auth_fourth_hint_re_enter_pin"
+                android:textAllCaps="true"
+
+                android:textColor="@color/black" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:lines="1"
+                android:singleLine="true"
+                android:id="@+id/emailEditText"
+                android:backgroundTint="@color/black" />
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

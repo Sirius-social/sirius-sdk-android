@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.sirius.sample.ui.auth.auth_second.AuthSecondViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:padding="12dp"
+            android:src="@drawable/logo_sirius"  />
+
+        <TextView
+            android:id="@+id/firstHint"
+            style="@style/Regular19"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/auth_second_hint"
+            android:textAllCaps="true"
+            android:textColor="@color/black" />
+
+        <com.sirius.sample.design.IndicatorView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/indicatorView"
+            android:layout_gravity="center" />
+
+
+        <LinearLayout
+            android:id="@+id/nextLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:onClick="@{viewModel::onRegisterClick}"
+            android:visibility="@{viewModel.nextVisibilityLiveData}"
+            android:padding="16dp">
+
+            <TextView
+                style="@style/Regular19"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/auth_next"
+                android:textAllCaps="true"
+                android:textColor="@color/black" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                app:tint="@color/defaultColor"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/btn_next" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Regular19"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/auth_second_hint_phone"
+                android:textAllCaps="true"
+                android:textColor="@color/black" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:onClick="@{viewModel::onCountryCodeClick}"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:src="@android:drawable/arrow_down_float"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:text="@{viewModel.countryCodeLiveData}"
+
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    style="@style/Regular19"/>
+
+            </LinearLayout>
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:lines="1"
+                android:inputType="phone"
+                android:singleLine="true"
+                android:id="@+id/phoneEditText"
+                android:backgroundTint="@color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/Regular19"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="@string/auth_second_hint_email"
+                android:textAllCaps="true"
+
+                android:textColor="@color/black" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="38dp"
+                android:lines="1"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"
+                android:id="@+id/emailEditText"
+                android:backgroundTint="@color/black" />
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

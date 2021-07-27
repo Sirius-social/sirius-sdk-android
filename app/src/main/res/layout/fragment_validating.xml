@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.sirius.sample.ui.validating.ValidatingViewModel" />
+    </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -15,7 +24,7 @@
             android:layout_marginBottom="16dp"
             android:padding="16dp"
             android:layout_marginRight="32dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/logo_sirius" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,28 +36,15 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Validating..."
+            android:text="@string/validating"
             android:layout_gravity="center"
             android:textAllCaps="true"
             android:gravity="center"
-            android:id="@+id/statusText"
+            style="@style/Regular19"
             android:textSize="24sp"
             android:layout_marginTop="48dp"
             android:textColor="@color/black"/>
 
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/hintText"
-                android:layout_gravity="center"
-                android:textAllCaps="true"
-                android:gravity="center"
-
-                android:textSize="16sp"
-                android:layout_marginTop="48dp"
-                android:textColor="@color/black"/>
 
 
         </LinearLayout>
@@ -56,16 +52,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            style="@style/Regular14"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="48dp"
           android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="8dp"
-            android:textSize="18sp"
             android:paddingBottom="8dp"
             android:textColor="@color/white"
             android:background="@drawable/btn_grey_round"
-            android:text="Cancel"/>
+            android:text="@string/cancel"/>
     </RelativeLayout>
+</layout>

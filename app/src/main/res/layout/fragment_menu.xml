@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.sirius.sample.ui.menu.MenuViewModel" />
+    </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
         android:orientation="vertical">
 
 
@@ -16,7 +23,7 @@
             android:layout_marginTop="32dp"
             android:padding="16dp"
             android:layout_marginRight="32dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/logo_sirius" />
 
         <ImageView
             android:id="@+id/logo_text"
@@ -26,33 +33,67 @@
 
             android:layout_marginRight="32dp"
             android:layout_below="@+id/logo"
-             />
+            android:src="@drawable/ic_text_logo" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/logo_text"
-        android:padding="24dp"
-        android:id="@+id/pairwisesBtn"
-        android:layout_marginTop="32dp"
-        android:textSize="20sp"
-        android:background="@drawable/btn_blue_frame_round"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/purple_700"
-        android:text="PAIRWISES"
-        />
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/pairwisesBtn"
-            android:layout_marginTop="16dp"
-            android:id="@+id/connectBtn"
+            android:layout_below="@+id/logo_text"
+            android:layout_marginTop="40dp"
+            android:onClick="@{viewModel::onConnectClick}"
             android:src="@drawable/btn_connect" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"
+            style="@style/Regular14"
+            android:padding="4dp"
+            android:layout_above="@+id/emptyLayout"
+            android:textColor="@color/white"
+            android:text="@string/btn_action_items"
+            android:background="@drawable/btn_red_round" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/emptyLayout"
+            android:gravity="center"
+            android:visibility="@{viewModel.emptyVisibilityLiveData}"
+            android:layout_marginBottom="32dp"
+            android:layout_alignParentBottom="true"
+            android:layout_above="@+id/actionsRecycler"
+            android:orientation="horizontal">
 
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_action_all_done"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/actions_all_done"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                style="@style/Bold12"/>
 
-
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:spanCount="3"
+           tools:itemCount="5"
+            android:visibility="@{viewModel.actionsListVisibilityLiveData}"
+            tools:listitem="@layout/view_action_items"
+            android:id="@+id/actionsRecycler"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
     </RelativeLayout>
+</layout>

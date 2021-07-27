@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.sirius.sample.ui.qrcode.ScanQrViewModel" />
+    </data>
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,17 +22,17 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/logo_sirius" />
 
         <TextView
             android:id="@+id/title"
-
+            style="@style/Regular19"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/logo"
             android:layout_marginRight="16dp"
             android:layout_toRightOf="@+id/logo"
-            android:text="Connect"
+            android:text="@string/title_connect"
             android:textAllCaps="true"
             android:textColor="@color/black"
             android:textSize="24sp" />
@@ -33,20 +43,26 @@
             android:layout_below="@+id/title"
             android:layout_alignLeft="@+id/title"
             android:layout_marginRight="32dp"
-            android:background="@color/teal_700" />
+            android:background="@color/green" />
 
 
 
-        <com.sirius.sample.view.SiriusScannerView
+        <com.sirius.sample.design.views.SiriusScannerView
             android:id="@+id/mScannerView"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/logo"
             android:layout_marginTop="16dp"
-            android:layout_height="350dp"
+            android:layout_height="300dp"
            />
 
-
+        <ImageView
+            android:layout_width="310dp"
+            android:layout_height="310dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/logo"
+            android:layout_marginTop="13dp"
+            android:src="@drawable/scan_qr_frame"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -59,8 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:id="@+id/backBtnLayout"
-                >
+                android:onClick="@{viewModel::onBackButtonClick}">
 
                 <ImageView
                     android:id="@+id/backBtn"
@@ -75,7 +90,7 @@
 
         <TextView
             android:id="@+id/scanQrHint"
-
+            style="@style/Regular15"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/mScannerView"
@@ -83,40 +98,40 @@ android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
             android:layout_marginTop="32dp"
             android:gravity="center"
-            android:text="Scan Contact`s QR Code"
+            android:text="@string/scan_qr_hint"
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/scanQrHint2"
-
+            style="@style/Regular15"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/scanQrHint"
             android:gravity="center"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
-            android:text="By scanning QR Code, I consent to connect my wallet for the purpose of sending and receiving credentials."
-           />
+            android:text="@string/scan_qr_hint2"
+            android:textColor="@color/gray_text_hint" />
 
         <TextView
             android:id="@+id/showBtn"
-
+            style="@style/Regular15"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/scanQrHint2"
             android:layout_centerHorizontal="true"
-
+            android:background="@drawable/btn_blue_frame_round"
             android:gravity="center"
             android:paddingLeft="16dp"
 
             android:layout_marginTop="16dp"
-
+            android:textColor="@color/gray_text_hint"
             android:paddingTop="8dp"
             android:paddingRight="16dp"
             android:textAllCaps="true"
             android:paddingBottom="8dp"
 
-            android:text="Don`t show this again" />
+            android:text="@string/btn_scan_qr_do_not_show" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -130,7 +145,7 @@ android:layout_marginLeft="32dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-
+                android:onClick="@{viewModel::onRevealClick}"
                 android:padding="16dp"
                 android:orientation="horizontal">
 
@@ -138,15 +153,16 @@ android:layout_marginLeft="32dp"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center"
-                   />
+                    android:src="@drawable/sample_qr"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginLeft="4dp"
-
-
-                    android:text="Reveal My Code"/>
+                    style="@style/Regular15"
+                    android:textColor="@color/gray_text_hint"
+                    android:text="@string/btn_scan_qr_show_code"/>
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
+</layout>

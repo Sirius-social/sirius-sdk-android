@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="FontRegular">
+        <item name="fontFamily">@font/avenir_book</item>
+        <item name="android:fontFamily">@font/avenir_book</item>
+    </style>
+
+    <style name="FontMedium">
+        <item name="fontFamily">@font/avenir_medium</item>
+        <item name="android:fontFamily">@font/avenir_medium</item>
+    </style>
+
+
+    <style name="FontBold">
+        <item name="fontFamily">@font/avenir_black</item>
+        <item name="android:fontFamily">@font/avenir_black</item>
+    </style>
+
+
+    <style name="FontSFBold">
+        <item name="fontFamily">@font/sf_pro_bold</item>
+        <item name="android:fontFamily">@font/sf_pro_bold</item>
+    </style>
+
+    <style name="FontSFMedium">
+        <item name="fontFamily">@font/sf_pro_med</item>
+        <item name="android:fontFamily">@font/sf_pro_med</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <style name="Bold12" parent="FontBold">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+
+    <style name="Medium8" parent="FontMedium">
+        <item name="android:textSize">8sp</item>
+    </style>
+
+
+    <style name="Medium12" parent="FontMedium">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+
+    <style name="Regular8" parent="FontRegular">
+        <item name="android:textSize">8sp</item>
+    </style>
+
+    <style name="Regular14" parent="FontRegular">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="Regular15" parent="FontRegular">
+        <item name="android:textSize">15sp</item>
+    </style>
+    <style name="Regular19" parent="FontRegular">
+        <item name="android:textSize">19sp</item>
+    </style>
+
+
+    <style name="SFBold15" parent="FontSFBold">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="SFMedium12" parent="FontSFBold">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+</resources>

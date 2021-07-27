@@ -1,3 +1,70 @@
 <resources>
     <string name="app_name">SiriusSdkSample</string>
+    <string name="please_wait">Please, wait..</string>
+    <string name="ok_button">OK</string>
+    <string name="menu_credentials" >credentials</string>
+    <string name="menu_menu" >menu</string>
+    <string name="menu_contacts" >contacts</string>
+    <string name="splash_screen_text" >Identity Credential Management</string>
+    <string name="auth_first_hint" >Lets get started…</string>
+    <string name="auth_first_hint_name" >First name</string>
+    <string name="auth_first_hint_lastname" >Last name</string>
+    <string name="auth_next" >Next</string>
+
+    <string name="auth_second_hint" >How do you want to connect?</string>
+    <string name="auth_second_hint_phone" >Phone</string>
+    <string name="auth_second_hint_email" >Email</string>
+
+    <string name="auth_third_hint" >Lets secure your identity wallet</string>
+    <string name="auth_third_hint_face" >Tap here to enable face id</string>
+
+    <string name="auth_third_identity_hint" >Lets verify your identity</string>
+    <string name="auth_third_identity2_hint" >Confirming who you are, using government-issued identification will allow you to accept a variety of digital credentials into your wallet</string>
+    <string name="auth_third_identity_btn_yes" >Yes, confirm my identity</string>
+    <string name="auth_third_identity_btn_no" >No, do this later</string>
+
+    <string name="auth_third_choose_hint" >Choose an id to upload</string>
+    <string name="auth_third_choose_tap_hint" >Tap to select identification type</string>
+
+    <string name="auth_fourth_hint" >AS a backup, choose pin</string>
+    <string name="auth_fourth_hint_pin" >Choose 6-digit pin</string>
+    <string name="auth_fourth_hint_re_enter_pin" >Re-enter pin</string>
+
+    <string name="action_item_request" >Request!</string>
+    <string name="action_item_offer" >Offer!</string>
+    <string name="action_item_connect" >Connect?</string>
+    <string name="action_item_message" >Message!</string>
+
+    <string name="btn_action_items" >Action items</string>
+    <string name="actions_all_done" >All done!</string>
+
+    <string name="title_contacts" >Contacts</string>
+    <string name="title_chats" >Chats</string>
+    <string name="title_credentials" >Credentials</string>
+    <string name="title_connect" >Connect</string>
+
+
+    <string name="show_qr_hint" >Allow other users to scan to connect</string>
+    <string name="show_qr_open_camera_btn" >Open camera</string>
+
+    <string name="scan_qr_hint" >Scan Contact`s QR Code</string>
+    <string name="scan_qr_hint2" >By scanning QR Code, I consent to connect my wallet for the purpose of sending and receiving credentials.</string>
+    <string name="btn_scan_qr_do_not_show" >Don`t show this again</string>
+    <string name="btn_scan_qr_show_code" >Reveal My Code</string>
+    <string name="camera_qr_scan_permission">For scan Qr you need to give permissions</string>
+
+
+    <string name="validating">Validating...</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="details_history">History</string>
+
+    <string name="connected_at">connected</string>
+    <string name="issued_at">issued</string>
+    <string name="details">Details</string>
+    <string name="filter_date_credential">Date issued</string>
+    <string name="filter_date_recent">Recent</string>
+    <string name="btn_add_tag">add tag</string>
+
+    <string name="search_hint" >SEARCH</string>
 </resources>

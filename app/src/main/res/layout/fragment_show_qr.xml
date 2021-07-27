@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.sirius.sample.ui.qrcode.ShowQrViewModel" />
+    </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -14,17 +22,17 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/logo_sirius" />
 
         <TextView
             android:id="@+id/title"
-
+            style="@style/Regular19"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/logo"
             android:layout_marginRight="16dp"
             android:layout_toRightOf="@+id/logo"
-            android:text="Connect"
+            android:text="@string/title_connect"
             android:textAllCaps="true"
             android:textColor="@color/black"
             android:textSize="24sp" />
@@ -35,17 +43,16 @@
             android:layout_below="@+id/title"
             android:layout_alignLeft="@+id/title"
             android:layout_marginRight="32dp"
-            android:background="@color/teal_700" />
+            android:background="@color/green" />
 
         <ImageView
             android:id="@+id/qrImage"
-            android:layout_width="256dp"
-            android:layout_height="256dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_below="@+id/logo"
-            android:scaleType="fitXY"
             android:layout_centerInParent="true"
             android:layout_marginTop="50dp"
-            />
+            android:src="@drawable/sample_qr" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -58,7 +65,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:id="@+id/backBtnLayout">
+                android:onClick="@{viewModel::onBackButtonClick}">
 
                 <ImageView
                     android:id="@+id/backBtn"
@@ -72,26 +79,30 @@
 
         <TextView
             android:id="@+id/showQrHint"
-
+            style="@style/Regular15"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/qrImage"
             android:layout_margin="32dp"
             android:gravity="center"
-            android:text="Allow other users to scan to connect"
+            android:text="@string/show_qr_hint"
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/openCameraBtn"
+            style="@style/Regular15"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/showQrHint"
             android:layout_centerHorizontal="true"
-            android:textColor="@color/teal_700"
+            android:background="@drawable/btn_blue_frame_round"
             android:gravity="center"
             android:paddingLeft="16dp"
             android:paddingTop="8dp"
             android:paddingRight="16dp"
             android:paddingBottom="8dp"
-            android:text="Open camera" />
+            android:textColor="@color/gray_text_hint"
+            android:onClick="@{viewModel::onScanQrClick}"
+            android:text="@string/show_qr_open_camera_btn" />
     </RelativeLayout>
+</layout>

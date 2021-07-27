@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="com.sirius.sample.utils.DateUtils"/>
+        <variable
+            name="model"
+            type="com.sirius.sample.models.ui.ItemContacts" />
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="10dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:background="@color/blue">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/title"
+                        style="@style/Regular15"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:text="@{model.title}"/>
+
+                    <ImageView
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginRight="8dp"
+                        android:id="@+id/chatBtn"
+                        android:src="@drawable/btn_chat"
+                        />
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:orientation="vertical"
+                    android:background="@color/white">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:orientation="vertical"
+                        android:background="@color/white">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/date_connected_text"
+                                android:textAllCaps="true"
+                                style="@style/FontSFMedium"
+                                android:textSize="12sp"
+                                android:gravity="center"
+                                android:text="@string/connected_at"
+                                android:textColor="@color/blue"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/date_connected"
+                                android:textAllCaps="true"
+                                style="@style/FontSFMedium"
+                                android:textSize="12sp"
+                                android:gravity="center"
+                                android:layout_marginLeft="4dp"
+                                android:text="@{DateUtils.getStringFromDateBase(model.date)}"
+                                android:textColor="@color/blue"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                style="@style/Regular14"
+                                android:textColor="@color/blue"
+                                android:text="Google LLC,\n6 street\nww.google.com" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+                                <androidx.recyclerview.widget.RecyclerView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    tools:itemCount="2"
+                                    android:id="@+id/tagsList"
+                                    tools:listitem="@layout/view_items_tags"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    style="@style/Regular14"
+                                    android:paddingBottom="8dp"
+                                    android:paddingTop="8dp"
+                                    android:layout_marginTop="2dp"
+                                    android:layout_gravity="center"
+                                    android:paddingLeft="16dp"
+                                    android:id="@+id/addTagBtn"
+                                    android:gravity="center"
+                                    android:paddingRight="16dp"
+                                    android:background="@drawable/btn_gray_frame_round"
+                                    android:textColor="@color/gray_text_hint"
+                                    android:text="@string/btn_add_tag"/>
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            android:id="@+id/btnHistory"
+                            android:orientation="horizontal">
+                            <ImageView
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+
+                                android:src="@drawable/ic_history_blue"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/blue"
+                                android:layout_gravity="center"
+                                style="@style/FontRegular"
+                                android:layout_marginLeft="8dp"
+                                android:text="@string/details_history"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/historyRecycler"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginBottom="16dp"/>
+
+                    </LinearLayout>
+
+
+                    <ImageView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:padding="4dp"
+                        android:id="@+id/moreActionBtn"
+                        android:layout_gravity="bottom|right"
+                        android:src="@drawable/ic_details"/>
+                </FrameLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</layout>
