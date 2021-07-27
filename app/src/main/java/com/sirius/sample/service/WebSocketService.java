@@ -15,16 +15,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
+import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketExtension;
 import com.neovisionaries.ws.client.WebSocketFactory;
 import com.sirius.sample.App;
 import com.sirius.sample.AppPref;
+import com.sirius.sdk.agent.MobileAgent;
+import com.sirius.sdk.base.WebSocketConnector;
 
 
 import java.io.IOException;
-import okhttp3.WebSocket;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 
 /**
@@ -38,11 +42,15 @@ public class WebSocketService extends Service {
     public static final String EXTRA_DISCONNECT = "disconnect";
     public static final String EXTRA_INITIALIZE = "initialize";
     public static final String EXTRA_CONNECT = "connect";
+    public static final String EXTRA_CLOSE = "close";
+    public static final String EXTRA_SEND = "send";
     private final static String TAG = WebSocketService.class.getName();
     NetworkStateReceiver networkStateReceiver;
 
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
+//TEMP
+    public static MobileAgent agent;
 
     private final class ServiceHandler extends Handler {
 
@@ -58,6 +66,20 @@ public class WebSocketService extends Service {
         }
     }
 
+    Map<String, WebSocket> webSockets = new HashMap<>();
+
+    WebSocket getWebSocket(String endpoint) {
+        if (webSockets.containsKey(endpoint)) {
+            return webSockets.get(endpoint);
+        } else {
+            WebSocket socket = connectToWebSocket(endpoint);
+            if(socket!=null){
+                webSockets.put(endpoint, socket);
+            }
+            return socket;
+        }
+    }
+
 
     public WebSocketService() {
         super();
@@ -66,8 +88,6 @@ public class WebSocketService extends Service {
         }
 
     }
-
-
 
 
     @Override
@@ -118,17 +138,26 @@ public class WebSocketService extends Service {
         mServiceLooper = thread.getLooper();
         // start the service using the background handler
         mServiceHandler = new ServiceHandler(mServiceLooper);
-        Intent intent = new Intent(EXTRA_INITIALIZE);
-        sendMessageToHandler(intent, 0, 0);
+ /*       Intent intent = new Intent(EXTRA_INITIALIZE);
+        sendMessageToHandler(intent, 0, 0);*/
 
     }
 
     protected void onHandleIntent(Intent intent) {
-
         if (EXTRA_INITIALIZE.equals(intent.getAction())) {
             connect();
-        }else if(EXTRA_CONNECT.equals(intent.getAction())){
-            connectToWebSocket(intent.getStringExtra("url"));
+        } else if (EXTRA_CONNECT.equals(intent.getAction())) {
+            getWebSocket(intent.getStringExtra("url"));
+        } else if (EXTRA_SEND.equals(intent.getAction())) {
+            byte[] data = intent.getByteArrayExtra("data");
+           WebSocket ws = getWebSocket(intent.getStringExtra("url"));
+          String dataString =   new String(data);
+          Log.d("mylog200","EXTRA_SEND dataString="+dataString);
+            if(ws!=null){
+                if(ws.isOpen()){
+                    ws.sendBinary(data);
+                }
+            }
         }
     }
 
@@ -136,25 +165,22 @@ public class WebSocketService extends Service {
     //TODO
 
     private void buildUrl() {
-     //   "wss://socialsirius.com/ws/notifications/?Token=bbf6cfb334c9a397d22477d0250d9329351517fb2653f31aee2f7e7f1ef75bbf5710b79a644a97b2e11e1cde928d7019da741180ce932c1b&session_id=48fa9281-d6b1-4b17-901d-7db9e64b70b1&extended=on";
+        //   "wss://socialsirius.com/ws/notifications/?Token=bbf6cfb334c9a397d22477d0250d9329351517fb2653f31aee2f7e7f1ef75bbf5710b79a644a97b2e11e1cde928d7019da741180ce932c1b&session_id=48fa9281-d6b1-4b17-901d-7db9e64b70b1&extended=on";
         String token = "5f41ae8b439627ce7d809e0c593a33e271246454ddfe54a6a0551b872ecbd6d31b483bdbaa9e10b969b3c656f914e89a9c9f4ccd2d64b8ed";// AppPref.getInstance().getServerInfoSession();
         String session = "48fa9281-d6b1-4b17-901d-7db9e64b70b1";
         String url = "wss://" + "socialsirius.com" + "/ws/notifications/?Token=" + token + "&session_id=" + session
-                +"&extended=off";
+                + "&extended=off";
         Intent intent = new Intent(EXTRA_CONNECT);
-        intent.putExtra("url",url);
+        intent.putExtra("url", url);
         sendMessageToHandler(intent, 0, 0);
-
-
     }
 
-    WebSocket ws;
     private static final int TIMEOUT = 15000;
 
-    private void connectToWebSocket(String url) {
+    private WebSocket  connectToWebSocket(String url) {
         Log.d("mylog500", "socket url=" + url);
         try {
-            new WebSocketFactory()
+            WebSocket ws = new WebSocketFactory()
                     .setVerifyHostname(false)
                     .setConnectionTimeout(TIMEOUT)
                     .createSocket(url)
@@ -162,11 +188,13 @@ public class WebSocketService extends Service {
                     .addExtension(WebSocketExtension.PERMESSAGE_DEFLATE)
                     .setPingInterval(60 * 3 * 1000)
                     .connect();
+            return ws;
         } catch (WebSocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     private void connect() {

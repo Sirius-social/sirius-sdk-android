@@ -2,20 +2,18 @@ package com.sirius.sdk_android
 
 
 import android.content.Context
+import android.util.Log
 import com.sirius.sdk.agent.BaseSender
+import com.sirius.sdk.agent.MobileAgent
 import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation
+import com.sirius.sdk.agent.pairwise.TheirEndpoint
 import com.sirius.sdk.hub.MobileContext
 import com.sirius.sdk.messaging.Message
-import com.sirius.sdk_android.utils.ClassScanner
-import com.sirius.sdk_android.helpers.ChanelHelper
-import com.sirius.sdk_android.helpers.InvitationHelper
-import com.sirius.sdk_android.helpers.PairwiseHelper
 import com.sirius.sdk_android.helpers.WalletHelper
-import okhttp3.MediaType
+import com.sirius.sdk_android.utils.ClassScanner
+import examples.connect_to_mediator.Main
+import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
 import shadow.org.json.JSONObject
 import java.lang.reflect.Modifier
 
@@ -42,27 +40,31 @@ class SiriusSDK {
 
 
     private fun createContext(indyEndpoint: String, serverUri: String, config: String, credential: String) {
+
         context = MobileContext.builder().setIndyEndpoint(indyEndpoint).setServerUri(serverUri)
             .setWalletConfig(JSONObject(config)).
             setWalletCredentials(JSONObject(credential))
             .setMediatorInvitation(Invitation.builder().setLabel(label).build())
             .setSender(object : BaseSender(){
-                override fun sendTo(endpoint: String, data: ByteArray): Boolean {
+                override fun sendTo(endpoint: String, data: ByteArray, agent: MobileAgent): Boolean {
                     Thread(Runnable {
                         //content-type
                         val ssiAgentWire: MediaType = "application/ssi-agent-wire".toMediaType()
                         var client: OkHttpClient = OkHttpClient()
+                        Log.d("mylog200","requset="+String(data))
                         val body: RequestBody = RequestBody.create(ssiAgentWire, data)
                         val request: Request = Request.Builder()
                             .url(endpoint)
                             .post(body)
                             .build()
-                        client.newCall(request).execute().use { response -> response.isSuccessful }
+                        client.newCall(request).execute().use { response ->
+                            Log.d("mylog200","response="+response.body?.string())
+                            response.isSuccessful }
                     }).start()
                     return false
                 }
 
-                override fun open() {
+                override fun open(endpoint: String, agent: MobileAgent) {
                     //TODO open socket
                 }
 
@@ -118,6 +120,47 @@ class SiriusSDK {
         createContext(indyEndpoint, myHost, config, credential)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
+    }
+
+
+    fun initialize(
+        mycontext: Context,
+        alias: String,
+        pass: String,
+        mainDirPath: String,
+        genesisPath:String,
+        networkName : String,
+        mediatorAddress : String,
+        label:String, baseSender: BaseSender
+    ) {
+        this.label = label
+        initAllMessages(mycontext)
+        var config = WalletHelper.getInstance().createWalletConfig(alias, mainDirPath)
+        val credential = WalletHelper.getInstance().createWalletCredential(pass)
+
+        MobileContext.addPool(networkName, genesisPath)
+        createContextWitMediator( config, credential,mediatorAddress, baseSender)
+
+        walletHelper.context = context
+        walletHelper.setDirsPath(mainDirPath)
+
+
+
+
+    }
+
+
+
+    private fun createContextWitMediator(config: String, credential: String, mediatorAddress : String , baseSender: BaseSender) {
+
+        context = MobileContext.builder()
+            .setWalletConfig(JSONObject(config)).
+            setWalletCredentials(JSONObject(credential))
+            .setMediatorInvitation( Invitation.builder().setLabel(label)
+                .setEndpoint(mediatorAddress )
+                .setRecipientKeys(listOf("DjgWN49cXQ6M6JayBkRCwFsywNhomn8gdAXHJ4bb98im")).build())
+            .setSender(baseSender)
+            .build() as MobileContext
     }
 
 }

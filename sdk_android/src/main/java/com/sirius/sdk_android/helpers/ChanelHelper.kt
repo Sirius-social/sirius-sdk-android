@@ -28,28 +28,36 @@ class ChanelHelper {
     }
 
     fun initListener() {
-        Thread(Runnable {
-            try {
-                listener = SiriusSDK.getInstance().context.subscribe()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }).start()
+        if (listener == null) {
+            Thread(Runnable {
+                try {
+                    listener = SiriusSDK.getInstance().context.subscribe()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }).start()
+        }
     }
 
-     var listener: Listener? = null
+    var listener: Listener? = null
 
 
     fun parseMessage(message: String) {
+        initListener()
         Thread(Runnable {
             try {
+                Log.d("mylog200", "listener=" + listener)
                 val cf = listener!!.one
-                SiriusSDK.getInstance().context.currentHub.agent.receiveMsg( message.toByteArray(charset("UTF-8")))
+                SiriusSDK.getInstance().context.currentHub.agent.receiveMsg(
+                    message.toByteArray(
+                        charset("UTF-8")
+                    )
+                )
                 val event = cf[60, TimeUnit.SECONDS]
                 val message = event.message()
-               val type =  message.type
+                val type = message.type
                 parseMessageByScenario(event)
-            }catch (e : java.lang.Exception){
+            } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
         }).start()
@@ -60,7 +68,7 @@ class ChanelHelper {
         ScenarioHelper.getInstance().scenarioMap.forEach {
             it.value.startScenario(event)
         }
-        Log.d("mylog2090","event.message type" + event.message())
+        Log.d("mylog2090", "event.message type" + event.message())
     }
 
 }

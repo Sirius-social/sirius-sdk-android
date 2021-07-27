@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.neovisionaries.ws.client.*
+import com.sirius.sample.service.ChannelMessageWrapper.WIRED_CONTENT_TYPE
 import com.sirius.sdk_android.SiriusSDK
 import com.sirius.sdk_android.helpers.ChanelHelper
 
@@ -83,7 +84,18 @@ class SiriusWebSocketListener() : WebSocketListener {
 
     @Throws(Exception::class)
     override fun onBinaryMessage(websocket: WebSocket, binary: ByteArray) {
-        Log.d(TAG, "onBinaryMessage websocket=$websocket binary=$binary")
+       val payloadText =  String(binary)
+        Log.d(
+            TAG,
+            "onBinaryMessage websocket=$websocket frame=$payloadText"
+        )
+        val messageWrapper = parseSocketMessage(payloadText)
+        Log.d("mylog2090","messageWrapper?.contentType="+messageWrapper?.contentType);
+        if(messageWrapper?.topic == "indy.transport"){
+            WebSocketService.agent.receiveMsg(binary)
+            Log.d("mylog2090","messageWrapper?.messageString="+messageWrapper?.messageString);
+            ChanelHelper.getInstance().parseMessage(messageWrapper?.messageFromMessageString ?: "")
+        }
     }
 
     @Throws(Exception::class)
@@ -154,6 +166,7 @@ class SiriusWebSocketListener() : WebSocketListener {
         val messageWrapper = parseSocketMessage(payloadText)
         Log.d("mylog2090","messageWrapper?.contentType="+messageWrapper?.contentType);
         if(messageWrapper?.topic == "indy.transport"){
+
             Log.d("mylog2090","messageWrapper?.messageString="+messageWrapper?.messageString);
             ChanelHelper.getInstance().parseMessage(messageWrapper?.messageFromMessageString ?: "")
         }
@@ -164,33 +177,35 @@ class SiriusWebSocketListener() : WebSocketListener {
             val gson = GsonBuilder().create()
             val jelem: JsonElement = gson.fromJson(messagePayload, JsonElement::class.java)
             val jobj = jelem.asJsonObject
-            val topic = jobj["topic"].asString ?: ""
-            val messageStrig = jobj["event"].toString()
-            val did: String? = if (jobj.has("did")) jobj["did"].asString else null
-            val contentType: String =
-                if (jobj.has("content_type")) jobj["content_type"].asString else ""
-            val meta = ChannelMessageWrapper.MessageWrapperMeta()
-            try {
-                val metadata = if (jobj.has("meta")) {
-                    if (!jobj["meta"].isJsonNull) {
-                        jobj["meta"].asJsonObject
-                    } else {
-                        JsonObject()
-                    }
-                } else JsonObject()
-                meta.uid = if (metadata.has("uid")) metadata["uid"].asString else null
-                meta.utc = if (metadata.has("utc")) metadata["utc"].asDouble else null
-                meta.content_type =
-                    if (metadata.has("content_type")) metadata["content_type"].asString else null
-                meta.session_id =
-                    if (metadata.has("session_id")) metadata["session_id"].asString else null
-            } catch (e: Exception) {
-                e.printStackTrace()
+            if(jobj.has("protected")){
+                val meta = ChannelMessageWrapper.MessageWrapperMeta()
+                return ChannelMessageWrapper("indy.transport", messagePayload, WIRED_CONTENT_TYPE, null, meta)
+            }else{
+                val topic = jobj["topic"].asString ?: ""
+                val messageStrig = jobj["event"].toString()
+                val did: String? = if (jobj.has("did")) jobj["did"].asString else null
+                val contentType: String =
+                    if (jobj.has("content_type")) jobj["content_type"].asString else ""
+                val meta = ChannelMessageWrapper.MessageWrapperMeta()
+                try {
+                    val metadata = if (jobj.has("meta")) {
+                        if (!jobj["meta"].isJsonNull) {
+                            jobj["meta"].asJsonObject
+                        } else {
+                            JsonObject()
+                        }
+                    } else JsonObject()
+                    meta.uid = if (metadata.has("uid")) metadata["uid"].asString else null
+                    meta.utc = if (metadata.has("utc")) metadata["utc"].asDouble else null
+                    meta.content_type =
+                        if (metadata.has("content_type")) metadata["content_type"].asString else null
+                    meta.session_id =
+                        if (metadata.has("session_id")) metadata["session_id"].asString else null
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                return ChannelMessageWrapper(topic, messageStrig, contentType, did, meta)
             }
-
-            return ChannelMessageWrapper(topic, messageStrig, contentType, did, meta)
-
-
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -1,4 +1,4 @@
-package com.sirius.sample;
+package com.sirius.sample.utils;
 
 import android.Manifest;
 import android.app.Activity;

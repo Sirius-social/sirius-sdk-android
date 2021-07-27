@@ -16,7 +16,9 @@ abstract class InviteeScenario() : BaseScenario() {
     }
 
     override fun stop(cause: String) {
+        //TODO send problem report
 
+        onScenarioEnd(false,cause)
     }
 
     override fun start(event: Event) {
@@ -25,7 +27,7 @@ abstract class InviteeScenario() : BaseScenario() {
         var myDid =  didVerkey.first
         var myConnectionKey =  didVerkey.second
         val me = Pairwise.Me(myDid, myConnectionKey)
-        val machine = Invitee(SiriusSDK.getInstance().context, me, SiriusSDK.getInstance().context.endpoints.get(0))
+        val machine = Invitee(SiriusSDK.getInstance().context, me, SiriusSDK.getInstance().context.getEndpointWithEmptyRoutingKeys())
         val pairwise : Pairwise?= machine.createConnection(invitation, SiriusSDK.getInstance().label)
         pairwise?.let {
             SiriusSDK.getInstance().context.pairwiseList.ensureExists(it)

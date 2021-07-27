@@ -9,10 +9,9 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.zxing.Result
-import com.sirius.sample.PermissionHelper
+import com.sirius.sample.utils.PermissionHelper
 import com.sirius.sample.R
 import com.sirius.sample.view.SiriusScannerView
-import com.sirius.sdk_android.SiriusSDK
 import com.sirius.sdk_android.helpers.ChanelHelper
 import com.sirius.sdk_android.helpers.InvitationHelper
 
