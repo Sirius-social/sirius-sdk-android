@@ -6,6 +6,7 @@ class User {
     var lastname : String? =null
     var phone : String? =null
     var email : String? =null
+    var pass : String? =null
 
 
 }

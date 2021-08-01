@@ -9,14 +9,16 @@ class ItemContacts : Serializable{
 
     }
 
-    constructor(title: String, date: Date, isActionExist: Boolean) {
+    constructor(id : String,title: String, date: Date) {
         this.title = title
         this.date = date
-        this.isActionExist = isActionExist
+        this.id = id
+       // this.isActionExist = isActionExist
     }
 
 
     var title: String? = null
+    var id: String? = null
     var date: Date? = null
     var isActionExist: Boolean = false
 

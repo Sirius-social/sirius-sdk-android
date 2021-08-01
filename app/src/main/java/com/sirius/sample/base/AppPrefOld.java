@@ -1,4 +1,4 @@
-package com.sirius.sampleOld;
+package com.sirius.sample.base;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -8,7 +8,7 @@ import android.content.res.Configuration;
 /**
  * Created by User on 29.08.2016.
  */
-public class AppPref {
+public class AppPrefOld {
 
 
     private static final String PREF_APP = "app_pref";
@@ -34,16 +34,16 @@ public class AppPref {
     private int blockType;
 
 
-    private static volatile AppPref instance;
+    private static volatile AppPrefOld instance;
 
-    private AppPref() {
+    private AppPrefOld() {
     }
 
-    public static AppPref getInstance() {
+    public static AppPrefOld getInstance() {
         if (instance == null) {
-            synchronized (AppPref.class) {
+            synchronized (AppPrefOld.class) {
                 if (instance == null) {
-                    instance = new AppPref();
+                    instance = new AppPrefOld();
                 }
             }
         }

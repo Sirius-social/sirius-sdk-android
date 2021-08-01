@@ -1,4 +1,4 @@
-package com.sirius.sampleOld.service;
+package com.sirius.sample.service;
 
 import androidx.annotation.NonNull;
 

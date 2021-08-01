@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="model"
+            type="com.sirius.sample.models.ui.ItemActions" />
+    </data>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
@@ -11,7 +19,7 @@
             app:cardUseCompatPadding="true"
             app:cardCornerRadius="10dp"
             app:contentPadding="16dp"
-            app:cardBackgroundColor="@color/red">
+            app:cardBackgroundColor="@{model.backColor}">
 
 
             <LinearLayout
@@ -26,7 +34,8 @@
                     style="@style/FontBold"
                     android:textAllCaps="true"
                     android:textSize="16sp"
-                    android:text="@string/action_item_request"/>
+                    tools:text="REQUEST"
+                    android:text="@{model.title}"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -34,8 +43,9 @@
                     android:textColor="@color/white"
                     style="@style/FontRegular"
                     android:textSize="14sp"
+                    tools:text="Some department"
                     android:layout_marginTop="4dp"
-                    android:text="Some departmnet"/>
+                    android:text="@{model.hint}"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

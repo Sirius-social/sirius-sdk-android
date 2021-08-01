@@ -1,11 +1,14 @@
 package com.sirius.sdk_android.helpers
 
 
+import android.util.Log
 import com.sirius.sdk.agent.pairwise.Pairwise
 
 import com.sirius.sdk.agent.pairwise.WalletPairwiseList
 import com.sirius.sdk.hub.MobileContext
 import com.sirius.sdk_android.SiriusSDK
+import org.hyperledger.indy.sdk.anoncreds.CredentialsSearch
+import org.hyperledger.indy.sdk.anoncreds.CredentialsSearchForProofReq
 
 import shadow.org.json.JSONObject
 
@@ -43,11 +46,18 @@ class PairwiseHelper {
         return mutableList
     }
 
+
+    fun getAllCredentials() {
+       val list =  (SiriusSDK.getInstance().context.currentHub.agent.wallet.anoncreds.proverGetCredentials(null))
+        Log.d("mylog2090","list="+list)
+    }
+
+
     fun getPairwise(theirDid: String? = null, theirVerkey: String? = null): Pairwise? {
-        if (theirDid != null) {
+        if (!theirDid.isNullOrEmpty()) {
             return SiriusSDK.getInstance().context.currentHub.pairwiseList.loadForDid(theirDid)
         }
-        if (theirVerkey != null) {
+        if (!theirVerkey.isNullOrEmpty()) {
             return SiriusSDK.getInstance().context.currentHub.pairwiseList.loadForVerkey(theirVerkey)
         }
         return null;

@@ -81,6 +81,10 @@ public abstract class BaseActivity<VB extends ViewDataBinding, M extends BaseAct
         pushPage(page, false);
     }
 
+  /*  public BaseFragment getPageFromStack(String key){
+        getSupportFragmentManager().getFragments()
+    }*/
+
     public void pushPage(BaseFragment page, boolean withAnimation) {
         if (getRootFragmentId() == 0) {
             throw new IllegalArgumentException("Declare geRootFragmentId() to use this method");

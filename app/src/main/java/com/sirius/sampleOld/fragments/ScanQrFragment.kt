@@ -8,12 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.zxing.Result
-import com.sirius.sampleOld.utils.PermissionHelper
 
-import com.sirius.sampleOld.view.SiriusScannerView
 import com.sirius.sdk_android.helpers.ChanelHelper
 import com.sirius.sdk_android.helpers.InvitationHelper
 import com.sirius.sample.R
+import com.sirius.sample.design.views.SiriusScannerView
+import com.sirius.sample.utils.PermissionHelper
 
 
 class ScanQrFragment : Fragment(), SiriusScannerView.ResultHandler {

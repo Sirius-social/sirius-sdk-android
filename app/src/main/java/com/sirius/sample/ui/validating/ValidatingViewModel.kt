@@ -17,6 +17,7 @@ open class ValidatingViewModel @Inject constructor(
 
 
     val goToShowQrScreenLiveData = MutableLiveData<Boolean>()
+    val cancelLiveData = MutableLiveData<Boolean>()
     val emptyVisibilityLiveData = MutableLiveData<Int>()
     val actionsListVisibilityLiveData = MutableLiveData<Int>()
 
@@ -27,6 +28,9 @@ open class ValidatingViewModel @Inject constructor(
         goToShowQrScreenLiveData.postValue(true)
     }
 
+    fun onCancelClick(v: View) {
+        cancelLiveData.postValue(true)
+    }
 
     fun showHideEmpty(show : Boolean){
         if(show){

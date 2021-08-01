@@ -8,6 +8,7 @@ import com.sirius.sample.base.App
 import com.sirius.sample.base.ui.BaseActivity
 import com.sirius.sample.databinding.ActivityAuthBinding
 import com.sirius.sample.ui.auth.auth_first.AuthFirstFragment
+import com.sirius.sample.ui.auth.auth_zero.AuthZeroFragment
 
 
 class AuthActivity : BaseActivity<ActivityAuthBinding, AuthActivityModel>() {
@@ -39,7 +40,7 @@ class AuthActivity : BaseActivity<ActivityAuthBinding, AuthActivityModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        showPage(AuthFirstFragment())
+        showPage(AuthZeroFragment())
     }
 
     override fun subscribe() {

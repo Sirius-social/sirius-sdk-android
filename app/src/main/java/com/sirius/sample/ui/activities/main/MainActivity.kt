@@ -8,6 +8,9 @@ import com.sirius.sample.R
 import com.sirius.sample.base.App
 import com.sirius.sample.base.ui.BaseActivity
 import com.sirius.sample.databinding.ActivityMainBinding
+import com.sirius.sample.design.BottomNavView
+import com.sirius.sample.ui.validating.ErrorFragment
+import com.sirius.sample.ui.validating.ValidatingFragment
 
 
 class MainActivity : BaseActivity<ActivityMainBinding, MainActivityModel>() {
@@ -45,8 +48,22 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainActivityModel>() {
                 it
             )
         })*/
+
         model.selectedTab.observe(this, Observer {
             dataBinding.navigationBottom.selectedTabLiveData.value = it
+        })
+
+        model.invitationStartLiveData.observe(this, Observer {
+                pushPage(ValidatingFragment())
+        })
+
+        model.invitationStopLiveData.observe(this, Observer {
+            if(it.first){
+                model.bottomNavClick.postValue(BottomNavView.BottomTab.Contacts)
+            }else{
+                popPage(ErrorFragment.newInstance(it.second))
+            }
+
         })
     }
 

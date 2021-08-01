@@ -2,6 +2,7 @@ package com.sirius.sample.base.dagger;
 
 import android.app.Application
 import com.sirius.sample.ui.activities.auth.AuthActivity
+import com.sirius.sample.ui.activities.loader.LoaderActivity
 import com.sirius.sample.ui.activities.main.MainActivity
 import com.sirius.sample.ui.activities.splash.SplashActivity
 import com.sirius.sample.ui.auth.auth_first.AuthFirstFragment
@@ -10,12 +11,14 @@ import com.sirius.sample.ui.auth.auth_second.AuthSecondFragment
 import com.sirius.sample.ui.auth.auth_third.AuthThirdFragment
 import com.sirius.sample.ui.auth.auth_third_identity.AuthThirdIChooseIdFragment
 import com.sirius.sample.ui.auth.auth_third_identity.AuthThirdIdentityFragment
+import com.sirius.sample.ui.auth.auth_zero.AuthZeroFragment
 import com.sirius.sample.ui.chats.ChatsFragment
 import com.sirius.sample.ui.contacts.ContactsFragment
 import com.sirius.sample.ui.credentials.CredentialsFragment
 import com.sirius.sample.ui.menu.MenuFragment
 import com.sirius.sample.ui.qrcode.ScanQrFragment
 import com.sirius.sample.ui.qrcode.ShowQrFragment
+import com.sirius.sample.ui.validating.ErrorFragment
 import com.sirius.sample.ui.validating.ValidatingFragment
 
 
@@ -45,9 +48,11 @@ interface AppComponent {
     fun inject(activity: MainActivity)
     fun inject(activity: AuthActivity)
     fun inject(activity: SplashActivity)
+    fun inject(activity: LoaderActivity)
 
 
     //Fragments
+    fun inject(fragment: AuthZeroFragment)
     fun inject(fragment: AuthFirstFragment)
     fun inject(fragment: AuthSecondFragment)
     fun inject(fragment: AuthThirdFragment)
@@ -62,5 +67,6 @@ interface AppComponent {
     fun inject(fragment: ShowQrFragment)
     fun inject(fragment: ChatsFragment)
     fun inject(fragment: ValidatingFragment)
+    fun inject(fragment: ErrorFragment)
 
 }

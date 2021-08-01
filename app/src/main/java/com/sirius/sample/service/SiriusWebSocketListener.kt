@@ -1,11 +1,11 @@
-package com.sirius.sampleOld.service
+package com.sirius.sample.service
 
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.neovisionaries.ws.client.*
-import com.sirius.sampleOld.service.ChannelMessageWrapper.WIRED_CONTENT_TYPE
+import com.sirius.sample.service.ChannelMessageWrapper.WIRED_CONTENT_TYPE
 import com.sirius.sdk_android.helpers.ChanelHelper
 
 
@@ -91,7 +91,7 @@ class SiriusWebSocketListener() : WebSocketListener {
         val messageWrapper = parseSocketMessage(payloadText)
         Log.d("mylog2090","messageWrapper?.contentType="+messageWrapper?.contentType);
         if(messageWrapper?.topic == "indy.transport"){
-            WebSocketService.agent.receiveMsg(binary)
+          // WebSocketService.agent.receiveMsg(binary)
             Log.d("mylog2090","messageWrapper?.messageString="+messageWrapper?.messageString);
             ChanelHelper.getInstance().parseMessage(messageWrapper?.messageFromMessageString ?: "")
         }

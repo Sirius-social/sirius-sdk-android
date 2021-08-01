@@ -1,4 +1,4 @@
-package com.sirius.sampleOld.service;
+package com.sirius.sample.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -18,8 +18,7 @@ import com.neovisionaries.ws.client.WebSocket;
 import com.neovisionaries.ws.client.WebSocketException;
 import com.neovisionaries.ws.client.WebSocketExtension;
 import com.neovisionaries.ws.client.WebSocketFactory;
-import com.sirius.sampleOld.App;
-import com.sirius.sdk.agent.MobileAgent;
+import com.sirius.sample.base.App;
 
 
 import java.io.IOException;
@@ -45,8 +44,6 @@ public class WebSocketService extends Service {
 
     private Looper mServiceLooper;
     private ServiceHandler mServiceHandler;
-//TEMP
-    public static MobileAgent agent;
 
     private final class ServiceHandler extends Handler {
 

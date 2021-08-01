@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.sirius.sample.ui.validating.ErrorViewModel" />
+    </data>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -32,6 +39,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="48dp"
                 android:gravity="center"
+                style="@style/Regular14"
                 android:text="ERROR"
                 android:textAllCaps="true"
                 android:textColor="@color/red"
@@ -40,7 +48,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="@{viewModel.errorTextLiveData}"
                 android:id="@+id/hintText"
                 android:layout_gravity="center"
                 android:textAllCaps="true"
@@ -56,7 +64,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            style="@style/Regular14"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="48dp"
@@ -66,6 +74,8 @@
             android:textSize="18sp"
             android:paddingBottom="8dp"
             android:textColor="@color/white"
+            android:onClick="@{viewModel::onOkClick}"
             android:background="@drawable/btn_grey_round"
             android:text="OK"/>
     </RelativeLayout>
+</layout>

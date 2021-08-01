@@ -7,10 +7,12 @@ import com.sirius.sample.base.ui.BaseViewModel
 import com.sirius.sample.models.ui.ItemContacts
 import com.sirius.sample.models.ui.ItemTags
 import com.sirius.sample.repository.UserRepository
+import com.sirius.sample.transform.PairwiseTransform
+import com.sirius.sdk_android.SiriusSDK
+import com.sirius.sdk_android.helpers.PairwiseHelper
 import java.util.*
 
 import javax.inject.Inject
-
 
 
 open class ContactsViewModel @Inject constructor(
@@ -19,13 +21,12 @@ open class ContactsViewModel @Inject constructor(
 ) : BaseViewModel(resourcesProvider) {
 
 
-
-    val adapterListLiveData : MutableLiveData<List<ItemContacts>> = MutableLiveData(listOf())
-    val onChatClickLiveData : MutableLiveData<ItemContacts?> = MutableLiveData()
-    val onAddTagBtnClickLiveData : MutableLiveData<ItemContacts?> = MutableLiveData()
-    val onMoreBtnClickLiveData : MutableLiveData<ItemContacts?> = MutableLiveData()
-    val onDetailsClickLiveData : MutableLiveData<ItemContacts?> = MutableLiveData()
-    val onTagsClickLiveData : MutableLiveData<ItemTags?> = MutableLiveData()
+    val adapterListLiveData: MutableLiveData<List<ItemContacts>> = MutableLiveData(listOf())
+    val onChatClickLiveData: MutableLiveData<ItemContacts?> = MutableLiveData()
+    val onAddTagBtnClickLiveData: MutableLiveData<ItemContacts?> = MutableLiveData()
+    val onMoreBtnClickLiveData: MutableLiveData<ItemContacts?> = MutableLiveData()
+    val onDetailsClickLiveData: MutableLiveData<ItemContacts?> = MutableLiveData()
+    val onTagsClickLiveData: MutableLiveData<ItemTags?> = MutableLiveData()
 
 
     fun onChatsClick(item: ItemContacts) {
@@ -48,29 +49,25 @@ open class ContactsViewModel @Inject constructor(
         onTagsClickLiveData.postValue(item)
     }
 
-    private fun createList() : MutableList<ItemContacts>{
-        val list :  MutableList<ItemContacts> = mutableListOf()
-        list.add(ItemContacts("Hoth departemnt", Date(),false))
-        list.add(ItemContacts("Jedy academu", Date(),false))
-        list.add(ItemContacts("USCIS", Date(1620761306000),true))
-        list.add(ItemContacts("Airport milan", Date(1620761306000),true))
+    private fun createList(): List<ItemContacts> {
+        val pairwises = PairwiseHelper.getInstance().getAllPairwise()
+        val list = pairwises.map {
+            PairwiseTransform.pairwiseToItemContacts(it)
+        }
         return list
-
     }
 
 
-
-    fun onFilterClick(v: View){
+    fun onFilterClick(v: View) {
 
     }
 
     override fun setupViews() {
         super.setupViews()
-        val list :  MutableList<ItemContacts> = createList()
+        val list: List<ItemContacts> = createList()
         //TODO add date to list
         adapterListLiveData.postValue(list)
     }
-
 
 
 }

@@ -46,7 +46,7 @@ class SiriusSDK {
             setWalletCredentials(JSONObject(credential))
             .setMediatorInvitation(Invitation.builder().setLabel(label).build())
             .setSender(object : BaseSender(){
-                override fun sendTo(endpoint: String, data: ByteArray, agent: MobileAgent): Boolean {
+                override fun sendTo(endpoint: String, data: ByteArray): Boolean {
                     Thread(Runnable {
                         //content-type
                         val ssiAgentWire: MediaType = "application/ssi-agent-wire".toMediaType()
@@ -64,7 +64,7 @@ class SiriusSDK {
                     return false
                 }
 
-                override fun open(endpoint: String, agent: MobileAgent) {
+                override fun open(endpoint: String) {
                     //TODO open socket
                 }
 
@@ -72,9 +72,6 @@ class SiriusSDK {
                     //TODO close socket
                 }
 
-                override fun create() {
-                    //TODO create socket
-                }
 
             })
             .build() as MobileContext
@@ -137,16 +134,10 @@ class SiriusSDK {
         initAllMessages(mycontext)
         var config = WalletHelper.getInstance().createWalletConfig(alias, mainDirPath)
         val credential = WalletHelper.getInstance().createWalletCredential(pass)
-
         MobileContext.addPool(networkName, genesisPath)
         createContextWitMediator( config, credential,mediatorAddress, baseSender)
-
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
-
-
-
-
     }
 
 
@@ -161,6 +152,11 @@ class SiriusSDK {
                 .setRecipientKeys(listOf("DjgWN49cXQ6M6JayBkRCwFsywNhomn8gdAXHJ4bb98im")).build())
             .setSender(baseSender)
             .build() as MobileContext
+
+    }
+
+    fun connectToMediator(){
+        context.connectToMediator()
     }
 
 }

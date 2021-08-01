@@ -3,7 +3,9 @@ package com.sirius.sample.base
 import android.content.Context
 import android.content.SharedPreferences
 import android.text.TextUtils
+import com.google.gson.Gson
 import com.sirius.sample.base.providers.Encryption
+import com.sirius.sample.models.User
 
 
 import java.util.*
@@ -84,7 +86,6 @@ class AppPref {
         val string = prefs.getString(tokenKey, "") ?: ""
         return getEncryptionDefault().decryptOrNull(string)
     }
-/*
 
     fun setUser(user: User?) {
         val userKey = getEncryptionDefault().encryptOrNull("user") ?: ""
@@ -109,11 +110,11 @@ class AppPref {
         }
         return null
     }
-*/
+
 
 
     fun isLoggedIn(): Boolean {
-        val isLoggedIn = !TextUtils.isEmpty(getToken())
+        val isLoggedIn = getUser() != null
         return isLoggedIn
     }
 

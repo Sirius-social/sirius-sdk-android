@@ -2,6 +2,7 @@ package com.sirius.sdk_android.helpers
 
 import com.sirius.sdk.hub.MobileContext
 import com.sirius.sdk_android.scenario.BaseScenario
+import com.sirius.sdk_android.scenario.EventActionAbstract
 
 class ScenarioHelper {
 
@@ -38,6 +39,17 @@ class ScenarioHelper {
     fun stopScenario(name : String, cause : String){
         val scenario = getScenarioBy(name)
         scenario?.stop(cause)
+    }
+
+    fun acceptScenario(name : String, id : String){
+        val scenario = getScenarioBy(name)
+        scenario?.let {
+            if(it is EventActionAbstract){
+                it.accept(id)
+            }
+        }
+
+
     }
 
 }

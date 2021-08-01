@@ -7,9 +7,10 @@ import android.widget.TextView
 
 import androidx.recyclerview.widget.RecyclerView
 
-import com.sirius.sampleOld.base.SimpleBaseRecyclerViewAdapter
+
 import com.sirius.sdk.agent.pairwise.Pairwise
 import com.sirius.sample.R
+import com.sirius.sample.base.ui.SimpleBaseRecyclerViewAdapter
 
 
 class PairwisesListAdapter() :

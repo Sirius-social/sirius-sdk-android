@@ -4,6 +4,9 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.sirius.sample.base.providers.ResourcesProvider
 import com.sirius.sample.base.ui.BaseViewModel
+import com.sirius.sample.transform.EventTransform
+import com.sirius.sample.models.ui.ItemActions
+import com.sirius.sample.repository.EventRepository
 import com.sirius.sample.repository.UserRepository
 
 import javax.inject.Inject
@@ -12,14 +15,16 @@ import javax.inject.Inject
 
 open class MenuViewModel @Inject constructor(
     val userRepository: UserRepository,
-    resourcesProvider: ResourcesProvider
+    resourcesProvider: ResourcesProvider,
+    val eventRepository: EventRepository
 ) : BaseViewModel(resourcesProvider) {
 
 
     val goToShowQrScreenLiveData = MutableLiveData<Boolean>()
     val emptyVisibilityLiveData = MutableLiveData<Int>()
     val actionsListVisibilityLiveData = MutableLiveData<Int>()
-
+    val adapterListLiveData : MutableLiveData<List<ItemActions>> = MutableLiveData(listOf())
+    val eventLiveData = eventRepository.eventStoreLiveData
 
 
 
@@ -40,9 +45,23 @@ open class MenuViewModel @Inject constructor(
     }
 
 
+    private fun createList() : List<ItemActions>{
+        val   list = eventRepository.eventMap.map {
+            EventTransform.eventToItemActions(it.value)
+        }
+        return list
+
+    }
+
+    fun updateList(){
+        val list =  createList()
+        showHideEmpty(list.isEmpty())
+        adapterListLiveData.postValue(list)
+    }
+
     override fun setupViews() {
         super.setupViews()
-        showHideEmpty(true)
+        updateList()
     }
 
 

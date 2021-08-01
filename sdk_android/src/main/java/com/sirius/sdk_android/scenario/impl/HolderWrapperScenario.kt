@@ -19,7 +19,7 @@ abstract class HolderWrapperScenario : BaseScenario() {
 
     abstract fun holderEventStore(id : String, event: Event)
     abstract fun holderEventRemove(id : String)
-    abstract fun getHolderEvent(id : String) : Event
+    abstract fun getHolderEvent(id : String) : Event?
 
     fun acceptHolder(id : String, holderListener : HolderListener ){
        val holder =  object : HolderScenario(){
@@ -34,7 +34,10 @@ abstract class HolderWrapperScenario : BaseScenario() {
 
        }
         val event = getHolderEvent(id)
-        holder.startScenario(event)
+        event?.let {
+            holder.startScenario(it)
+        }
+
     }
 
     fun cancelHolder(id : String,cause: String, holderListener : HolderListener ){

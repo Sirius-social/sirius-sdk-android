@@ -1,4 +1,4 @@
-package com.sirius.sampleOld.utils
+package com.sirius.sample.utils
 
 import android.content.Context
 import java.io.FileOutputStream

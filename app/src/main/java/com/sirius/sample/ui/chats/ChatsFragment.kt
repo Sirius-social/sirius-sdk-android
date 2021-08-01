@@ -7,7 +7,9 @@ import com.sirius.sample.R
 import com.sirius.sample.base.App
 import com.sirius.sample.base.ui.BaseFragment
 import com.sirius.sample.databinding.*
+import com.sirius.sample.models.ui.ItemActions
 import com.sirius.sample.models.ui.ItemContacts
+import com.sirius.sample.models.ui.message.BaseItemMessage
 
 
 class ChatsFragment : BaseFragment<FragmentChatsBinding, ChatsViewModel>() {
@@ -27,13 +29,8 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding, ChatsViewModel>() {
    val adapter  = MessagesListAdapter()
 
     override fun setupViews() {
+        model.item = arguments?.getSerializable("item") as? ItemContacts
         super.setupViews()
-
-        /*   historyAdapter!!.setOnAdapterItemClick {
-               it?.let {
-                   model.onItemClick(it)
-               }
-           }*/
         dataBinding.messagesRecyclerView.adapter = adapter
     }
 
@@ -51,7 +48,7 @@ class ChatsFragment : BaseFragment<FragmentChatsBinding, ChatsViewModel>() {
         })
     }
 
-    private fun updateAdapter(data: List<ItemContacts>) {
+    private fun updateAdapter(data: List<BaseItemMessage>) {
         adapter.setDataList(data)
         adapter.notifyDataSetChanged()
     }
