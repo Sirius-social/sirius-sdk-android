@@ -30,37 +30,43 @@ abstract class InviteeScenario() : BaseScenario(), EventStorageAbstract, EventAc
         onScenarioEnd(false, cause)
     }
 
-    var storage: EventWalletStorage? = null
 
-    fun initStorage() {
-        if (storage == null && SiriusSDK.getInstance().context != null) {
-            storage = EventWalletStorage(SiriusSDK.getInstance().context.nonSecrets)
-        }
+    override fun eventStore(id: String, event: Event, accepted : Boolean) {
+      /*  val tags = JSONObject()
+        val recipentKey = event.recipientVerkey
+        val pairwisedid = event.pairwise?.their?.did
+        tags.put("type", "invitee")
+        tags.put("isAccepted", accepted)*/
+        val tags = EventWalletStorage.EventTags()
+        tags.isAccepted = accepted.toString()
+        tags.type = "connect"
+        EventWalletStorage.getInstance().add(event,id, tags)
     }
 
-    override fun eventStore(id: String, event: Event) {
-        initStorage()
-        storage?.add(event,id, null)
+   fun eventStorePairwise(id: String, event: Event, accepted : Boolean){
+       val tags = EventWalletStorage.EventTags()
+       tags.isAccepted = accepted.toString()
+       tags.type = "connect"
+       tags.pairwiseDid = event?.pairwise?.their?.did
+       EventWalletStorage.getInstance().add(event,id, tags)
     }
 
     override fun getEvent(id: String): Event? {
-        initStorage()
-        return storage?.get(id)
+        return EventWalletStorage.getInstance().get(id)
     }
 
     override fun eventRemove(id: String) {
-        initStorage()
-        storage?.delete(id)
+        EventWalletStorage.getInstance().delete(id)
     }
 
-    override fun cancel(id: String, cause: String) {
+    override fun cancel(id: String, cause: String?) {
       //  eventRemove(id)
         //TODO cancel
         // cancel(id,cause)
         onScenarioEnd(false, cause)
     }
 
-    override fun accept(id: String) {
+    override fun accept(id: String, comment : String?) {
         onScenarioStart()
         val event = getEvent(id)
         val invitation = event?.message() as? Invitation
@@ -85,13 +91,17 @@ abstract class InviteeScenario() : BaseScenario(), EventStorageAbstract, EventAc
                 error = problemReport.explain
             }
         }
+        event?.let {
+            val eventPairwise = Event(pairwise, it.messageObj.toString())
+            eventStorePairwise(invitation?.id ?: "",eventPairwise,pairwise != null)
+        }
         onScenarioEnd(pairwise != null, error)
     }
 
 
     override fun start(event: Event) {
         val id = event.message().id
-        eventStore(id, event)
+        eventStore(id, event,false)
         onScenarioEnd(true, null)
     }
 

@@ -2,11 +2,14 @@ package com.sirius.sdk_android.helpers
 
 
 import android.util.Log
+import com.google.gson.Gson
 import com.sirius.sdk.agent.pairwise.Pairwise
 
 import com.sirius.sdk.agent.pairwise.WalletPairwiseList
 import com.sirius.sdk.hub.MobileContext
+import com.sirius.sdk.messaging.Message
 import com.sirius.sdk_android.SiriusSDK
+import com.sirius.sdk_android.models.CredentialsRecord
 import org.hyperledger.indy.sdk.anoncreds.CredentialsSearch
 import org.hyperledger.indy.sdk.anoncreds.CredentialsSearchForProofReq
 
@@ -28,7 +31,6 @@ class PairwiseHelper {
     }
 
 
-
     fun getAllPairwise(): List<Pairwise> {
         val list =
             (SiriusSDK.getInstance().context.currentHub.agent.wallet.pairwise.listPairwise() as? List<String>).orEmpty()
@@ -47,9 +49,12 @@ class PairwiseHelper {
     }
 
 
-    fun getAllCredentials() {
-       val list =  (SiriusSDK.getInstance().context.currentHub.agent.wallet.anoncreds.proverGetCredentials(null))
-        Log.d("mylog2090","list="+list)
+    fun getAllCredentials(): List<CredentialsRecord> {
+        val list =
+            (SiriusSDK.getInstance().context.currentHub.agent.wallet.anoncreds.proverGetCredentials("{}"))
+        return list.mapNotNull {
+            Gson().fromJson(it, CredentialsRecord::class.java)
+        }
     }
 
 
@@ -61,13 +66,5 @@ class PairwiseHelper {
             return SiriusSDK.getInstance().context.currentHub.pairwiseList.loadForVerkey(theirVerkey)
         }
         return null;
-    }
-
-
-
-    fun sendMessageTo(message: String, pairwise: Pairwise) {
-        val mess = com.sirius.sdk.agent.aries_rfc.feature_0095_basic_message.Message.builder()
-            .setContent(message).setLocale("ru").build()
-        SiriusSDK.getInstance().context.sendTo(mess, pairwise)
     }
 }

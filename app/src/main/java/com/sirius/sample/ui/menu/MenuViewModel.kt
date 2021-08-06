@@ -46,8 +46,8 @@ open class MenuViewModel @Inject constructor(
 
 
     private fun createList() : List<ItemActions>{
-        val   list = eventRepository.eventMap.map {
-            EventTransform.eventToItemActions(it.value)
+        val   list = eventRepository.loadAllUnacceptedEventActions().map {
+             EventTransform.eventToItemActions(it)
         }
         return list
 

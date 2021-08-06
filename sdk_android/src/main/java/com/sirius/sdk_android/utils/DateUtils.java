@@ -55,6 +55,7 @@ public class DateUtils {
     public static final String PATTERN_DAY_MONTH = "dd MMMM";
     public static final String PATTERN_DAY_MONTH_IN_TIME = "dd MMMM в HH:mm";
     public static final String PATTERN_ROSTER_STATUS_RESPONSE = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'";
+    public static final String PATTERN_ROSTER_STATUS_RESPONSE2 = "yyyy-MM-dd HH:mm:ss.SSSSSSZ";
     // 2019-01-15 18:42:01Z
     public static final String PATTERN_INDY_MESSAGE = "yyyy-MM-dd HH:mm:ssZ";
     public static final String PATTERN_INDY_MESSAGE2 = "yyyy-MM-dd'T'HH:mm:ssZ";

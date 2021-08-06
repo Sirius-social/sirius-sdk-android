@@ -1,8 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-</LinearLayout>
+    <data>
+        <import type="android.view.Gravity" />
+        <import type="com.sirius.sample.R" />
+        <import type="com.sirius.sample.utils.DateUtils" />
+        <import type="androidx.core.content.ContextCompat" />
+        <variable
+            name="item"
+            type="com.sirius.sample.ui.chats.message.BaseItemMessage" />
+    </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/mainLayout"
+        android:gravity="@{item.mine ? Gravity.END : Gravity.START}">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@{ContextCompat.getColor(context, item.mine ? R.color.blue : R.color.grey3)}"
+            app:cardUseCompatPadding="true"
+            app:contentPadding="16dp"
+            app:cardCornerRadius="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text"
+                    tools:text="Sample text"
+                    android:textColor="@{ContextCompat.getColor(context, item.mine ? R.color.white : R.color.black)}"
+                    android:text="@{item.text}"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date"
+                    android:gravity="right"
+                    android:layout_gravity="right"
+                    android:textSize="10sp"
+                    tools:text="11:22 11.12.2021"
+                    android:textColor="@{ContextCompat.getColor(context, item.mine ? R.color.white : R.color.black)}"
+                    android:text="@{DateUtils.getStringFromDate(item.date, DateUtils.PATTERN_ddMMyyyyHHmm,false)}"/>
+            </LinearLayout>
+
+
+
+        </androidx.cardview.widget.CardView>
+
+
+    </LinearLayout>
 </layout>

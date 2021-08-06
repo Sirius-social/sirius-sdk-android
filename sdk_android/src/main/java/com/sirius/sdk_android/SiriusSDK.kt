@@ -2,18 +2,21 @@ package com.sirius.sdk_android
 
 
 import android.content.Context
+import android.system.Os
 import android.util.Log
 import com.sirius.sdk.agent.BaseSender
-import com.sirius.sdk.agent.MobileAgent
 import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation
-import com.sirius.sdk.agent.pairwise.TheirEndpoint
+
 import com.sirius.sdk.hub.MobileContext
 import com.sirius.sdk.messaging.Message
 import com.sirius.sdk_android.helpers.WalletHelper
 import com.sirius.sdk_android.utils.ClassScanner
-import examples.connect_to_mediator.Main
+import com.sirius.sdk_android.utils.PoolMobile
+import com.sirius.sdk_android.utils.PoolUtils
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
+import org.hyperledger.indy.sdk.IndyJava
+import org.hyperledger.indy.sdk.LibIndy
 import shadow.org.json.JSONObject
 import java.lang.reflect.Modifier
 
@@ -132,9 +135,13 @@ class SiriusSDK {
     ) {
         this.label = label
         initAllMessages(mycontext)
+
+    //   LibIndy.setRuntimeConfig("{\"collect_backtrace\": true }")
         var config = WalletHelper.getInstance().createWalletConfig(alias, mainDirPath)
         val credential = WalletHelper.getInstance().createWalletCredential(pass)
-        MobileContext.addPool(networkName, genesisPath)
+      //  Os.setenv("TMPDIR",mainDirPath,true)
+//        PoolUtils.createPoolLedgerConfig(networkName, genesisPath)
+     //   MobileContext.addPool(networkName, genesisPath)
         createContextWitMediator( config, credential,mediatorAddress, baseSender)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)

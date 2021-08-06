@@ -1,14 +1,13 @@
 package com.sirius.sdk_android
 
+import com.google.gson.Gson
 import com.sirius.sdk.agent.listener.Event
 import com.sirius.sdk.agent.wallet.abstract_wallet.AbstractNonSecrets
 import com.sirius.sdk.agent.wallet.abstract_wallet.model.RetrieveRecordOptions
-import com.sirius.sdk.storage.abstract_storage.AbstractImmutableCollection
-import com.sirius.sdk.storage.abstract_storage.AbstractKeyValueStorage
 import com.sirius.sdk.utils.Pair
 import com.sirius.sdk_android.helpers.PairwiseHelper
+import com.sirius.sdk_android.utils.DateUtils
 import shadow.org.json.JSONObject
-
 import java.util.*
 
 class EventWalletStorage(val storage: AbstractNonSecrets) {
@@ -16,14 +15,50 @@ class EventWalletStorage(val storage: AbstractNonSecrets) {
     var DEFAULT_FETCH_LIMIT = 1000
     var selectedDb: String = "event"
 
+    /**
+     * All tags should be Strings
+     */
+    class EventTags() {
+        var pairwiseDid: String? = null
+        var type: String? = null
+        var isAccepted: String? = null
 
-    fun add(event: Event, key: String, tags: String?) {
+        fun serialize(): String {
+            return Gson().toJson(this, EventTags::class.java)
+        }
+
+    }
+
+    companion object {
+        private var eventWalletStorage: EventWalletStorage? = null
+
+        @JvmStatic
+        fun getInstance(): EventWalletStorage {
+            if (eventWalletStorage == null) {
+                if (SiriusSDK.getInstance().context != null) {
+                    eventWalletStorage =
+                        EventWalletStorage(SiriusSDK.getInstance().context.nonSecrets)
+                }
+            }
+            return eventWalletStorage!!
+        }
+    }
+
+    fun add(event: Event, key: String, tags: EventTags?) {
+        if (event.getMessageObj().has("message")) {
+            val msgJson = event.getMessageObj().getJSONObject("message")
+            if( msgJson?.has("sent_time") == false){
+                event.getMessageObj().getJSONObject("message").put("sent_time",DateUtils.getStringFromDate(Date(),DateUtils.PATTERN_ROSTER_STATUS_RESPONSE2,true))
+            }
+        }
         val eventObject = serializeEvent(event)
         val eventGet = get(key)
+        val tagsString = tags?.serialize()
         if (eventGet == null) {
-            storage.addWalletRecord(selectedDb, key, eventObject.toString(), tags)
+            storage.addWalletRecord(selectedDb, key, eventObject.toString(), tagsString)
         } else {
             storage.updateWalletRecordValue(selectedDb, key, eventObject.toString())
+            storage.updateWalletRecordTags(selectedDb, key, tagsString)
         }
     }
 
@@ -71,12 +106,12 @@ class EventWalletStorage(val storage: AbstractNonSecrets) {
 
     fun fetch(limit: Int = DEFAULT_FETCH_LIMIT, tags: String? = null): Pair<List<Event>, Int> {
         var searchString = "{}"
-        if(!tags.isNullOrEmpty()){
+        if (!tags.isNullOrEmpty()) {
             searchString = tags
         }
         val result = storage.walletSearch(
             selectedDb, searchString,
-            RetrieveRecordOptions(false, true, false), limit
+            RetrieveRecordOptions(false, true, true), limit
         )
         return if (result.first != null && result.first !== org.json.JSONObject.NULL) {
             val listValue: MutableList<Event> = ArrayList()
@@ -84,7 +119,9 @@ class EventWalletStorage(val storage: AbstractNonSecrets) {
                 val `object`: Any = result.first!![i]
                 val jsonObject = JSONObject(`object`.toString())
                 val values = jsonObject.optString("value")
+                val tags = jsonObject.optJSONObject("tags")
                 val event = restoreEvent(values)
+                event?.messageObj?.put("tags",tags)
                 if (event != null) {
                     listValue.add(event)
                 }
@@ -94,5 +131,17 @@ class EventWalletStorage(val storage: AbstractNonSecrets) {
             Pair(ArrayList(), result.second)
         }
     }
+
+    /*  override fun selectDb(name: String) {
+          selectedDb = name
+      }
+
+      override fun add(value: Any?, tags: String?) {
+
+      }
+
+      override fun fetch(tags: String?, limit: Int?): Pair<MutableList<Any>, Int> {
+
+      }*/
 
 }

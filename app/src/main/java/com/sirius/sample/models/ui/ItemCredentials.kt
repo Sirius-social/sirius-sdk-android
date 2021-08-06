@@ -17,5 +17,6 @@ class ItemCredentials {
     var title: String? = null
     var date: Date? = null
     var isActionExist: Boolean = false
+    var detailList: List<ItemCredentialsDetails> = listOf()
 
 }

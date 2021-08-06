@@ -9,7 +9,7 @@ class PairwiseTransform {
 
     companion object {
         fun pairwiseToItemContacts(pairwise: Pairwise) : ItemContacts{
-           return ItemContacts("",pairwise.their.label, Date())
+           return ItemContacts(pairwise.their.did,pairwise.their.label, Date())
         }
     }
 }

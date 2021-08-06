@@ -36,16 +36,20 @@ class ScenarioHelper {
         scenarioMap.remove(name)
     }
 
-    fun stopScenario(name : String, cause : String){
+    fun stopScenario(name : String, id : String, cause : String){
         val scenario = getScenarioBy(name)
-        scenario?.stop(cause)
+        scenario?.let {
+            if(it is EventActionAbstract){
+                it.cancel(id, cause)
+            }
+        }
     }
 
     fun acceptScenario(name : String, id : String){
         val scenario = getScenarioBy(name)
         scenario?.let {
             if(it is EventActionAbstract){
-                it.accept(id)
+                it.accept(id, "")
             }
         }
 

@@ -23,7 +23,7 @@ class PairwisesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_pairwises, container,false)
         list  = view.findViewById(R.id.contactsRecyclerView)
         adapter.setOnAdapterItemClick {
-            PairwiseHelper.getInstance().sendMessageTo("TEST 0095",it)
+           // PairwiseHelper.getInstance().sendMessageTo("TEST 0095",it)
         }
         list!!.adapter = adapter
         updateAdapter()

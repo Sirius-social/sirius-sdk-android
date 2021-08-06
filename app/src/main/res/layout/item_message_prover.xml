@@ -9,7 +9,7 @@
         <import type="androidx.core.content.ContextCompat" />
         <variable
             name="item"
-            type="com.sirius.sample.ui.chats.message.OfferItemMessage" />
+            type="com.sirius.sample.ui.chats.message.ProverItemMessage" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:layout_margin="16dp"
             app:contentPadding="16dp"
             app:cardUseCompatPadding="true"
-            app:cardBackgroundColor="@color/green">
+            app:cardBackgroundColor="@color/cardConnectionCredentials">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -32,11 +32,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAllCaps="true"
-                    android:textColor="@color/blue"
+                    android:textColor="@color/white"
                     android:layout_gravity="center"
                     android:gravity="center"
                     style="@style/Regular19"
-                    android:text="@string/message_credentials_offer"/>
+                    android:text="@string/message_credentials_request"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

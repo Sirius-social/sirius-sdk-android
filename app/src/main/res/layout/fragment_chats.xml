@@ -17,101 +17,136 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:background="@drawable/btn_blue_top_round"
             android:gravity="center"
-             android:paddingBottom="32dp"
-            android:background="@drawable/btn_blue_top_round">
+            android:orientation="horizontal"
+            android:paddingBottom="32dp">
 
             <ImageView
                 android:layout_width="30dp"
-                android:layout_marginLeft="16dp"
                 android:layout_height="30dp"
-                app:tint="@color/white"
-                android:src="@drawable/logo_sirius"/>
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/logo_sirius"
+                app:tint="@color/white" />
+
             <TextView
+                style="@style/FontMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:padding="16dp"
-                style="@style/FontMedium"
-                android:textSize="16sp"
                 android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="@{viewModel.titleLiveData}"
                 android:textColor="@color/white"
-                android:text="@{viewModel.titleLiveData}"/>
+                android:textSize="16sp" />
 
             <ImageView
                 android:layout_width="30dp"
-                android:layout_marginRight="16dp"
                 android:layout_height="30dp"
+                android:layout_marginRight="16dp"
                 android:padding="3dp"
-                android:src="@drawable/ic_question"/>
+                android:src="@drawable/ic_question" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-
-            android:paddingBottom="16dp"
             android:layout_marginTop="64dp"
-            android:background="@drawable/btn_gray_top_round">
+
+            android:background="@drawable/btn_gray_top_round"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginRight="16dp"
                 android:orientation="horizontal">
+
                 <ImageView
                     android:layout_width="30dp"
 
                     android:layout_height="30dp"
-                    app:tint="@color/blue"
-                    android:src="@drawable/ic_history"/>
+                    android:src="@drawable/ic_history"
+                    app:tint="@color/blue" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    >
+                    android:gravity="center">
 
                     <TextView
+                        style="@style/FontMedium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        style="@style/FontMedium"
+                        android:layout_gravity="center"
+                        android:background="@drawable/btn_yellow_round"
                         android:gravity="center"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
-                        android:textSize="12sp"
-                        android:background="@drawable/btn_yellow_round"
-                        android:layout_gravity="center"
+                        android:text="credential offer"
                         android:textColor="@color/white"
-                        android:text="credential offer"/>
+                        android:textSize="12sp" />
                 </LinearLayout>
 
 
                 <ImageView
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    app:tint="@color/blue"
-                    android:src="@drawable/ic_details"/>
+                    android:src="@drawable/ic_details"
+                    app:tint="@color/blue" />
 
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/messagesRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/messagesRecyclerView"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                app:stackFromEnd="true"
                 android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                android:layout_marginTop="16dp"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/btn_gray_round"
+
+                android:orientation="horizontal">
+
+
+                <EditText
+                    android:id="@+id/messageText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/transparent"
+                    android:hint="Enter message" />
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:onClick="@{viewModel::onSendClick}"
+                    android:padding="10dp"
+                    android:id="@+id/sendIcon"
+                    android:src="@drawable/btn_next"
+                    app:tint="@color/blue" />
+
+
+            </LinearLayout>
 
         </LinearLayout>
 

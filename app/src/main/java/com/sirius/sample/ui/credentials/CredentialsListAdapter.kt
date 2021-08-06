@@ -26,7 +26,11 @@ class CredentialsListAdapter :
     class CredentialsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var binding: ViewItemsCredentialsBinding? = DataBindingUtil.bind<ViewItemsCredentialsBinding>(itemView)
         fun bind(item: ItemCredentials) {
-            binding?.model = item
+            binding?.item = item
+            val adapter = CredentialsDetailAdapter()
+            adapter.setDataList(item.detailList)
+            binding?.detailsList?.isNestedScrollingEnabled = false
+            binding?.detailsList?.adapter = adapter
         }
     }
 

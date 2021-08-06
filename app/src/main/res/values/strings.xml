@@ -44,6 +44,11 @@
     <string name="title_chats" >Chats</string>
     <string name="title_credentials" >Credentials</string>
     <string name="title_connect" >Connect</string>
+    <string name="message_connected_successfully" >Connection Approved</string>
+    <string name="message_offer_successfully" >Credentials accepted</string>
+    <string name="message_credentials_offer" >Credentials offered</string>
+    <string name="message_credentials_request" >Credentials requested</string>
+    <string name="message_credentials_request_succes" >Credentials approved</string>
 
 
     <string name="show_qr_hint" >Allow other users to scan to connect</string>
