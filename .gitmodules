@@ -1,4 +1,4 @@
-[submodule "java"]
-	path = java
+[submodule "sdk_android/java_sdk"]
+	path = sdk_android/java_sdk
 	url = git@github.com:Sirius-social/sirius-sdk-java.git
-	branch = android_test
+	branch = merge
