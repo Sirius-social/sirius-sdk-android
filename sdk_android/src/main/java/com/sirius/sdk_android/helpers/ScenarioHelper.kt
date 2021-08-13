@@ -45,11 +45,11 @@ class ScenarioHelper {
         }
     }
 
-    fun acceptScenario(name : String, id : String){
+    fun acceptScenario(name : String, id : String, comment : String? = null){
         val scenario = getScenarioBy(name)
         scenario?.let {
             if(it is EventActionAbstract){
-                it.accept(id, "")
+                it.accept(id, comment)
             }
         }
 

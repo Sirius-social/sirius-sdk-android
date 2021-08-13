@@ -163,7 +163,7 @@ class SiriusSDK {
     }
 
     fun connectToMediator(){
-        context.connectToMediator()
+        context.connectToMediator(this.label)
     }
 
 }

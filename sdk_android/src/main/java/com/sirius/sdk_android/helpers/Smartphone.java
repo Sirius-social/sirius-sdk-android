@@ -32,7 +32,7 @@ public class Smartphone {
     public void start() {
         if (context == null) {
             context = new MobileContext(config);
-            context.connectToMediator();
+            context.connectToMediator("Edge Test agent");
             Pair<String, String> didVk = context.getDid().createAndStoreMyDid();
             me = new Pairwise.Me(didVk.first, didVk.second);
             //context.addMediatorKey(me.getVerkey());
@@ -71,7 +71,7 @@ public class Smartphone {
                     Pair<Boolean, String> res = holder.accept(offer);
                 } else if (event.message() instanceof RequestPresentationMessage && event.getPairwise() != null) {
                     RequestPresentationMessage request = (RequestPresentationMessage) event.message();
-                    Prover prover = new Prover(context, event.getPairwise(), context.getLedgers().get(networkName), masterSecret);
+                    Prover prover = new Prover(context, event.getPairwise(), masterSecret);
                     prover.prove(request);
                 } else if (event.message() instanceof Message && event.getPairwise() != null) {
                     Message message = (Message) event.message();
