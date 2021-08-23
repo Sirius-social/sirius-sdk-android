@@ -15,7 +15,7 @@ abstract class InviterScenario() : BaseScenario() {
     var connectionKey : String? =null
 
 
-    fun generateInvitation()  : String{
+    open fun generateInvitation()  : String{
         val verkey = SiriusSDK.getInstance().context.crypto.createKey()
         connectionKey =  verkey
         val myEndpoint : Endpoint = SiriusSDK.getInstance().context.endpointWithEmptyRoutingKeys
@@ -31,13 +31,9 @@ abstract class InviterScenario() : BaseScenario() {
        return listOf(ConnRequest::class.java)
     }
 
-    override fun stop(cause: String) {
-        //TODO send problem report
-        onScenarioEnd(false,cause)
-    }
 
 
-    override fun start(event: Event) {
+    override fun start(event: Event) : Pair<Boolean,String?> {
         val request = event.message() as ConnRequest
         val didVerkey = SiriusSDK.getInstance().context.did.createAndStoreMyDid()
         var did = didVerkey.first
@@ -48,7 +44,7 @@ abstract class InviterScenario() : BaseScenario() {
         pairwise?.let {
             SiriusSDK.getInstance().context.pairwiseList.ensureExists(it)
         }
-        onScenarioEnd(pairwise!=null,null)
+        return Pair(pairwise!=null,null)
     }
 
 

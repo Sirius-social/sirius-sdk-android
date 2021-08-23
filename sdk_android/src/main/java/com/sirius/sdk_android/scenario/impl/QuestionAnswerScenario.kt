@@ -7,66 +7,62 @@ import com.sirius.sdk.agent.listener.Event
 import com.sirius.sdk.messaging.Message
 import com.sirius.sdk_android.EventWalletStorage
 import com.sirius.sdk_android.SiriusSDK
-import com.sirius.sdk_android.scenario.BaseScenario
-import com.sirius.sdk_android.scenario.EventActionAbstract
-import com.sirius.sdk_android.scenario.EventStorageAbstract
+import com.sirius.sdk_android.helpers.PairwiseHelper
+import com.sirius.sdk_android.scenario.*
 
 
-abstract class QuestionAnswerScenario : BaseScenario(), EventStorageAbstract, EventActionAbstract {
+abstract class QuestionAnswerScenario(val eventStorage : EventStorageAbstract) : BaseScenario(), EventActionAbstract {
     override fun initMessages(): List<Class<out Message>> {
         return listOf(QuestionMessage::class.java, AnswerMessage::class.java)
     }
 
-    override fun stop(cause: String) {
 
-    }
-
-    override fun start(event: Event) {
+    override fun start(event: Event): Pair<Boolean, String?> {
         val id = event.message().id
-        if(event.message() is QuestionMessage){
-            eventStore(id, event,false)
-        }else{
-           val answerMessage =  event.message() as AnswerMessage
-           val idQuestion =  answerMessage.threadId
-           val questionEvent = getEvent(idQuestion)
+        if (event.message() is QuestionMessage) {
+            val eventPair = EventTransform.eventToPair(event)
+            eventStorage.eventStore(id, eventPair, false)
+        } else {
+            val answerMessage = event.message() as AnswerMessage
+            val idQuestion = answerMessage.threadId
+            val questionEvent = eventStorage.getEvent(idQuestion)
             questionEvent?.let {
-                eventStore(id, questionEvent,true)
+                eventStorage.eventStore(id, questionEvent, true)
             }
         }
-        onScenarioEnd(true, null)
+        return Pair(true, null)
     }
 
-    override fun onScenarioStart() {
-
-    }
-
-    override fun onScenarioEnd(success: Boolean, error: String?) {
+    override fun onScenarioStart(id: String) {
 
     }
 
-    override fun eventStore(id: String, event: Event, accepted: Boolean) {
-        val tags = EventWalletStorage.EventTags()
-        tags.isAccepted = accepted.toString()
-        tags.type = "question"
-        tags.pairwiseDid = event.pairwise?.their?.did
-        EventWalletStorage.getInstance().add(event, id,tags)
+    override fun onScenarioEnd(id: String,success: Boolean, error: String?) {
+
     }
 
-    override fun eventRemove(id: String) {
-        EventWalletStorage.getInstance().delete(id)
+    override fun actionStart(action: EventAction, id: String, comment: String?, actionListener: EventActionListener?) {
+        if (action == EventAction.accept) {
+            accept(id, comment,actionListener)
+        } else if (action == EventAction.cancel) {
+            cancel(id, comment,actionListener)
+        }
     }
 
-    override fun getEvent(id: String): Event? {
-        return EventWalletStorage.getInstance().get(id)
+
+    fun accept(id: String, comment: String?,actionListener: EventActionListener?) {
+        val event = eventStorage.getEvent(id)
+        val questionMessage = event?.second as? QuestionMessage
+        val pairwise = PairwiseHelper.getInstance().getPairwise(event?.first)
+        Recipes.makeAnswer(
+            SiriusSDK.getInstance().context,
+            comment,
+            questionMessage,
+            pairwise
+        )
     }
 
-    override fun accept(id: String, comment: String?) {
-            val event =  getEvent(id)
-            val questionMessage = event?.message() as? QuestionMessage
-            Recipes.makeAnswer(SiriusSDK.getInstance().context,comment,questionMessage,event?.pairwise)
-    }
-
-    override fun cancel(id: String, cause: String?) {
+    fun cancel(id: String, cause: String?,actionListener: EventActionListener?) {
 
     }
 }

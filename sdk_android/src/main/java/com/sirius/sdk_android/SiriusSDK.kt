@@ -131,6 +131,7 @@ class SiriusSDK {
         genesisPath:String,
         networkName : String,
         mediatorAddress : String,
+        recipientKeys : List<String>,
         label:String, baseSender: BaseSender
     ) {
         this.label = label
@@ -142,21 +143,21 @@ class SiriusSDK {
       //  Os.setenv("TMPDIR",mainDirPath,true)
 //        PoolUtils.createPoolLedgerConfig(networkName, genesisPath)
      //   MobileContext.addPool(networkName, genesisPath)
-        createContextWitMediator( config, credential,mediatorAddress, baseSender)
+        createContextWitMediator( config, credential,mediatorAddress,recipientKeys, baseSender)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
     }
 
 
 
-    private fun createContextWitMediator(config: String, credential: String, mediatorAddress : String , baseSender: BaseSender) {
-
+    private fun createContextWitMediator(config: String, credential: String, mediatorAddress : String , recipientKeys : List<String>,baseSender: BaseSender) {
+       val mediatorLabel =  "Mediator"
         context = MobileContext.builder()
             .setWalletConfig(JSONObject(config)).
             setWalletCredentials(JSONObject(credential))
-            .setMediatorInvitation( Invitation.builder().setLabel(label)
+            .setMediatorInvitation( Invitation.builder().setLabel(mediatorLabel)
                 .setEndpoint(mediatorAddress )
-                .setRecipientKeys(listOf("DjgWN49cXQ6M6JayBkRCwFsywNhomn8gdAXHJ4bb98im")).build())
+                .setRecipientKeys(recipientKeys).build())
             .setSender(baseSender)
             .build() as MobileContext
 

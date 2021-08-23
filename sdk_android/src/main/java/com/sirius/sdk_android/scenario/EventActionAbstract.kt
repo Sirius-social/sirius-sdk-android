@@ -1,8 +1,23 @@
 package com.sirius.sdk_android.scenario
 
-interface  EventActionAbstract {
 
-    fun accept(id : String, comment : String?)
+class EventAction protected constructor(private val action: String) {
+    companion object {
+        val accept = EventAction("accept")
+        val cancel = EventAction("cancel")
+    }
+}
 
-    fun cancel(id : String, cause: String?)
+interface EventActionListener{
+    fun onActionStart(action: EventAction, id: String, comment: String?)
+    fun onActionEnd(
+        action: EventAction,
+        id: String,
+        comment: String?,
+        success: Boolean,
+        error: String?
+    )
+}
+interface EventActionAbstract {
+    fun actionStart(action: EventAction, id: String, comment: String?,actionListener :EventActionListener? = null)
 }

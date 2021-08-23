@@ -60,7 +60,10 @@ class PairwiseHelper {
 
     fun getPairwise(theirDid: String? = null, theirVerkey: String? = null): Pairwise? {
         if (!theirDid.isNullOrEmpty()) {
-            return SiriusSDK.getInstance().context.currentHub.pairwiseList.loadForDid(theirDid)
+            val pairwise =  SiriusSDK.getInstance().context.currentHub.pairwiseList.loadForDid(theirDid)
+           pairwise?.let {
+               return it
+           }
         }
         if (!theirVerkey.isNullOrEmpty()) {
             return SiriusSDK.getInstance().context.currentHub.pairwiseList.loadForVerkey(theirVerkey)
