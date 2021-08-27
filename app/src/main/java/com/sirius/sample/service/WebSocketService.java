@@ -22,8 +22,16 @@ import com.sirius.sample.base.App;
 
 
 import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 
 /**
@@ -138,7 +146,7 @@ public class WebSocketService extends Service {
 
     protected void onHandleIntent(Intent intent) {
         if (EXTRA_INITIALIZE.equals(intent.getAction())) {
-            connect();
+
         } else if (EXTRA_CONNECT.equals(intent.getAction())) {
             getWebSocket(intent.getStringExtra("url"));
         } else if (EXTRA_SEND.equals(intent.getAction())) {
@@ -155,26 +163,50 @@ public class WebSocketService extends Service {
     }
 
 
-    //TODO
-
-    private void buildUrl() {
-        //   "wss://socialsirius.com/ws/notifications/?Token=bbf6cfb334c9a397d22477d0250d9329351517fb2653f31aee2f7e7f1ef75bbf5710b79a644a97b2e11e1cde928d7019da741180ce932c1b&session_id=48fa9281-d6b1-4b17-901d-7db9e64b70b1&extended=on";
-        String token = "5f41ae8b439627ce7d809e0c593a33e271246454ddfe54a6a0551b872ecbd6d31b483bdbaa9e10b969b3c656f914e89a9c9f4ccd2d64b8ed";// AppPref.getInstance().getServerInfoSession();
-        String session = "48fa9281-d6b1-4b17-901d-7db9e64b70b1";
-        String url = "wss://" + "socialsirius.com" + "/ws/notifications/?Token=" + token + "&session_id=" + session
-                + "&extended=off";
-        Intent intent = new Intent(EXTRA_CONNECT);
-        intent.putExtra("url", url);
-        sendMessageToHandler(intent, 0, 0);
-    }
-
     private static final int TIMEOUT = 15000;
 
     private WebSocket  connectToWebSocket(String url) {
         Log.d("mylog500", "socket url=" + url);
+        final TrustManager[] trustAllCerts = new TrustManager[]{
+                new X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
+                    }
+
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new java.security.cert.X509Certificate[]{};
+                    }
+                }
+        };
+        // Install the all-trusting trust manager
+        SSLContext sslContext = null;
+        try {
+            sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+            // Create an ssl socket factory with our all-trusting manager
+            final SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+            /*okHttpClient.sslSocketFactory(sslSocketFactory, (X509TrustManager) trustAllCerts[0]);
+            okHttpClient.hostnameVerifier(new HostnameVerifier() {
+                @Override
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            });*/
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        }
         try {
             WebSocket ws = new WebSocketFactory()
                     .setVerifyHostname(false)
+                    .setSSLContext(sslContext)
                     .setConnectionTimeout(TIMEOUT)
                     .createSocket(url)
                     .addListener(new SiriusWebSocketListener())
@@ -190,9 +222,6 @@ public class WebSocketService extends Service {
         return null;
     }
 
-    private void connect() {
-        buildUrl();
-    }
 
 
 }

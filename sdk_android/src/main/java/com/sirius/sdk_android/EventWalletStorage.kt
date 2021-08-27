@@ -15,19 +15,7 @@ class EventWalletStorage(val storage: AbstractNonSecrets) {
     var DEFAULT_FETCH_LIMIT = 1000
     var selectedDb: String = "event"
 
-    /**
-     * All tags should be Strings
-     */
-    class EventTags() {
-        var pairwiseDid: String? = null
-        var type: String? = null
-        var isAccepted: String? = null
 
-        fun serialize(): String {
-            return Gson().toJson(this, EventTags::class.java)
-        }
-
-    }
 
     companion object {
         private var eventWalletStorage: EventWalletStorage? = null

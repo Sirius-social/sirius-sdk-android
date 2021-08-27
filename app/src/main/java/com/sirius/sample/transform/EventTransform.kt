@@ -77,14 +77,16 @@ class EventTransform() {
         }
 
         fun itemActionToEvent(itemActions: ItemActions?, eventRepository: EventRepository): Event? {
-            return eventRepository.getEvent(itemActions?.id ?: "")
+           // return eventRepository.getEvent(itemActions?.id ?: "")
+            return null
         }
 
         fun itemContactsToEvent(
             itemContacts: ItemContacts?,
             eventRepository: EventRepository
         ): Event? {
-            return eventRepository.getEvent(itemContacts?.id ?: "")
+            return null
+            //return eventRepository.getEvent(itemContacts?.id ?: "")
         }
     }
 }

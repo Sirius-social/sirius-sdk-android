@@ -82,13 +82,6 @@ class SDKUseCase @Inject constructor(private val eventRepository: EventRepositor
             projDir.mkdirs()
         }
         val walletId = alias.substring(IntRange(0, 8))
-
-        val poolDirPath = mainDirPath + File.separator + "pool"
-        val poolDirPath2 = mainDirPath + File.separator + "poolDir"+ File.separator + "pool3.txn"
-        Utils.copyRawFile(context, R.raw.pool_transactions_genesis, poolDirPath)
-        //     val path = "android.resource://" + getPackageName().toString() + "/" + R.raw.pool_transactions_genesis
-        val mediatorAddress = "ws://mediator.socialsirius.com:8000/ws"
-
         val sender = object : BaseSender() {
             override fun sendTo(endpoint: String, data: ByteArray): Boolean {
                 if (endpoint.startsWith("http")) {
@@ -124,17 +117,14 @@ class SDKUseCase @Inject constructor(private val eventRepository: EventRepositor
 
 
         }
+        val mediatorAddress = "wss://mediator.socialsirius.com/ws"
+        val recipientKeys = "DjgWN49cXQ6M6JayBkRCwFsywNhomn8gdAXHJ4bb98im"
 
-        /* SiriusSDK.getInstance().initialize(
-             this, "https://socialsirius.com/endpoint/48fa9281-d6b1-4b17-901d-7db9e64b70b1/",
-             "https://socialsirius.com", walletId, passForWallet, mainDirPath, "Sirius Sample SDK"
-         )*/
         Thread(Runnable {
             SiriusSDK.getInstance().initialize(
                 mycontext = context, alias = walletId, pass = passForWallet,
                 mainDirPath = mainDirPath,
-                genesisPath = poolDirPath2, networkName = "default",
-                mediatorAddress = mediatorAddress,
+                mediatorAddress = mediatorAddress,recipientKeys = listOf(recipientKeys),
                 label = "Sirius Sample SDK", baseSender = sender
             )
             ChanelHelper.getInstance().initListener()
@@ -147,51 +137,53 @@ class SDKUseCase @Inject constructor(private val eventRepository: EventRepositor
 
     private fun initScenario() {
         ScenarioHelper.getInstance().addScenario("Inviter", object : InviterScenario() {
-            override fun onScenarioStart() {
+
+            override fun onScenarioStart(id: String) {
                 eventRepository.invitationStartLiveData.postValue(true)
             }
 
-            override fun onScenarioEnd(success: Boolean, error: String?) {
+            override fun onScenarioEnd(id: String, success: Boolean, error: String?) {
                 eventRepository.invitationStopLiveData.postValue(Pair(success, error))
             }
         })
 
-        ScenarioHelper.getInstance().addScenario("Invitee", object : InviteeScenario() {
-            override fun onScenarioStart() {
+        ScenarioHelper.getInstance().addScenario("Invitee", object : InviteeScenario(eventRepository) {
+
+          /*  override fun eventStore(id: String, event: Event, accepted: Boolean) {
+                super.eventStore(id, event, accepted)
+                eventRepository.eventStoreLiveData.postValue(id)
+            }
+*/
+            override fun onScenarioStart(id: String) {
                 eventRepository.invitationStartLiveData.postValue(true)
             }
 
-            override fun onScenarioEnd(success: Boolean, error: String?) {
+            override fun onScenarioEnd(id: String, success: Boolean, error: String?) {
                 eventRepository.invitationStopLiveData.postValue(Pair(success, error))
             }
 
-            override fun eventStore(id: String, event: Event, accepted: Boolean) {
-                super.eventStore(id, event, accepted)
-                eventRepository.eventStoreLiveData.postValue(id)
-            }
-
         })
-        ScenarioHelper.getInstance().addScenario("Holder", object : HolderScenario() {
+        ScenarioHelper.getInstance().addScenario("Holder", object : HolderScenario(eventRepository) {
 
-            override fun eventStore(id: String, event: Event, accepted: Boolean) {
+         /*   override fun eventStore(id: String, event: Event, accepted: Boolean) {
                 super.eventStore(id, event, accepted)
                 eventRepository.eventStoreLiveData.postValue(id)
             }
-
+*/
         })
 
-        ScenarioHelper.getInstance().addScenario("Text", object : TextScenario() {
-            override fun eventStore(id: String, event: Event, accepted: Boolean) {
+        ScenarioHelper.getInstance().addScenario("Text", object : TextScenario(eventRepository) {
+           /* override fun eventStore(id: String, event: Event, accepted: Boolean) {
                 super.eventStore(id, event, accepted)
                 eventRepository.eventStoreLiveData.postValue(id)
-            }
+            }*/
         })
 
-        ScenarioHelper.getInstance().addScenario("Prover", object : ProverScenario() {
-            override fun eventStore(id: String, event: Event, accepted: Boolean) {
+        ScenarioHelper.getInstance().addScenario("Prover", object : ProverScenario(eventRepository) {
+           /* override fun eventStore(id: String, event: Event, accepted: Boolean) {
                 super.eventStore(id, event, accepted)
                 eventRepository.eventStoreLiveData.postValue(id)
-            }
+            }*/
         })
 
     }
