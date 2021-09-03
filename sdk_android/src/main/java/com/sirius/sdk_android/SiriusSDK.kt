@@ -5,6 +5,7 @@ import android.content.Context
 import android.system.Os
 import android.util.Log
 import com.sirius.sdk.agent.BaseSender
+import com.sirius.sdk.agent.MobileContextConnection
 import com.sirius.sdk.agent.aries_rfc.feature_0160_connection_protocol.messages.Invitation
 
 import com.sirius.sdk.hub.MobileContext
@@ -37,32 +38,37 @@ class SiriusSDK {
 
 
     val walletHelper = WalletHelper.getInstance();
-    var label : String? =null
+    var label: String? = null
 
     lateinit var context: MobileContext
 
 
-    private fun createContext(indyEndpoint: String, serverUri: String, config: String, credential: String) {
+    private fun createContext(
+        indyEndpoint: String,
+        serverUri: String,
+        config: String,
+        credential: String
+    ) {
 
         context = MobileContext.builder().setIndyEndpoint(indyEndpoint).setServerUri(serverUri)
-            .setWalletConfig(JSONObject(config)).
-            setWalletCredentials(JSONObject(credential))
+            .setWalletConfig(JSONObject(config)).setWalletCredentials(JSONObject(credential))
             .setMediatorInvitation(Invitation.builder().setLabel(label).build())
-            .setSender(object : BaseSender(){
+            .setSender(object : BaseSender() {
                 override fun sendTo(endpoint: String, data: ByteArray): Boolean {
                     Thread(Runnable {
                         //content-type
                         val ssiAgentWire: MediaType = "application/ssi-agent-wire".toMediaType()
                         var client: OkHttpClient = OkHttpClient()
-                        Log.d("mylog200","requset="+String(data))
+                        Log.d("mylog200", "requset=" + String(data))
                         val body: RequestBody = RequestBody.create(ssiAgentWire, data)
                         val request: Request = Request.Builder()
                             .url(endpoint)
                             .post(body)
                             .build()
                         client.newCall(request).execute().use { response ->
-                            Log.d("mylog200","response="+response.body?.string())
-                            response.isSuccessful }
+                            Log.d("mylog200", "response=" + response.body?.string())
+                            response.isSuccessful
+                        }
                     }).start()
                     return false
                 }
@@ -80,7 +86,7 @@ class SiriusSDK {
             .build() as MobileContext
     }
 
-    private fun initAllMessages(mycontext: Context){
+    private fun initAllMessages(mycontext: Context) {
         object : ClassScanner(mycontext) {
             override fun isTargetClassName(className: String): Boolean {
                 return (className.startsWith("com.sirius.sdk.") //I want classes under my package
@@ -111,7 +117,7 @@ class SiriusSDK {
         alias: String,
         pass: String,
         mainDirPath: String,
-        label:String
+        label: String
     ) {
         this.label = label
         initAllMessages(mycontext)
@@ -128,41 +134,48 @@ class SiriusSDK {
         alias: String,
         pass: String,
         mainDirPath: String,
-        mediatorAddress : String,
-        recipientKeys : List<String>,
-        label:String, baseSender: BaseSender
+        mediatorAddress: String,
+        recipientKeys: List<String>,
+        label: String, baseSender: BaseSender
     ) {
         this.label = label
         initAllMessages(mycontext)
 
-    //   LibIndy.setRuntimeConfig("{\"collect_backtrace\": true }")
+        //   LibIndy.setRuntimeConfig("{\"collect_backtrace\": true }")
         var config = WalletHelper.getInstance().createWalletConfig(alias, mainDirPath)
         val credential = WalletHelper.getInstance().createWalletCredential(pass)
-      //  Os.setenv("TMPDIR",mainDirPath,true)
+        //  Os.setenv("TMPDIR",mainDirPath,true)
 //        PoolUtils.createPoolLedgerConfig(networkName, genesisPath)
-     //   MobileContext.addPool(networkName, genesisPath)
-        createContextWitMediator( config, credential,mediatorAddress,recipientKeys, baseSender)
+        //   MobileContext.addPool(networkName, genesisPath)
+        createContextWitMediator(config, credential, mediatorAddress, recipientKeys, baseSender)
         walletHelper.context = context
         walletHelper.setDirsPath(mainDirPath)
     }
 
 
-
-    private fun createContextWitMediator(config: String, credential: String, mediatorAddress : String , recipientKeys : List<String>,baseSender: BaseSender) {
-       val mediatorLabel =  "Mediator"
+    private fun createContextWitMediator(
+        config: String,
+        credential: String,
+        mediatorAddress: String,
+        recipientKeys: List<String>,
+        baseSender: BaseSender
+    ) {
+        val mediatorLabel = "Mediator"
         context = MobileContext.builder()
-            .setWalletConfig(JSONObject(config)).
-            setWalletCredentials(JSONObject(credential))
-            .setMediatorInvitation( Invitation.builder().setLabel(mediatorLabel)
-                .setEndpoint(mediatorAddress )
-                .setRecipientKeys(recipientKeys).build())
+            .setWalletConfig(JSONObject(config)).setWalletCredentials(JSONObject(credential))
+            .setMediatorInvitation(
+                Invitation.builder().setLabel(mediatorLabel)
+                    .setEndpoint(mediatorAddress)
+                    .setRecipientKeys(recipientKeys).build()
+            )
             .setSender(baseSender)
             .build() as MobileContext
 
     }
 
-    fun connectToMediator(){
-        context.connectToMediator(this.label)
+    fun connectToMediator(firebaseId: String? = null) {
+        val fcmConnection = MobileContextConnection("FCMService", 1, listOf(), firebaseId)
+        context.connectToMediator(this.label, listOf(fcmConnection))
     }
 
 }
