@@ -18,7 +18,8 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import org.hyperledger.indy.sdk.IndyJava
 import org.hyperledger.indy.sdk.LibIndy
-import shadow.org.json.JSONObject
+import org.json.JSONObject
+
 import java.lang.reflect.Modifier
 
 
